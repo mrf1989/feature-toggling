@@ -19,11 +19,40 @@ export default function Profile() {
   const pricing = useRecoilValue(pricingPlanState);
   const [addPetsMessages, setAddPetsMessages] = useState("");
   const [addVetsMessages, setAddVetsMessages] = useState("");
+  const [pets, setPets] = useState([]);
+  const [vets, setVets] = useState([] as any[]);
 
+  
   useEffect(() => {
     if (!user.username) {
       navigate("/login");
     }
+    
+    async function handlePets() {
+      const response = await fetch(`/api/pet/owner/${user.id}`);
+      if (response.ok) {
+        const pets = await response.json();
+        setPets(pets);
+      }
+    }
+    handlePets();
+
+    async function handleVets() {
+      const response = await fetch(`/api/vet/customer/${user.id}`);
+      if (response.ok) {
+        const vetAdscriptions = await response.json();
+        let vets: any[] = [];
+        vetAdscriptions.forEach(async (adscription: any) => {
+          const response = await fetch(`/api/user/${adscription.vetId}`);
+          if (response.ok) {
+            const vet = await response.json();
+            vets.push(vet);
+            setVets(vets);
+          }
+        });
+      }
+    }
+    handleVets();
 
     if (pricing.nPets - user.pets > 0) {
       setAddPetsMessages(`You can register ${pricing.nPets - user.pets} more pets`);
@@ -40,7 +69,7 @@ export default function Profile() {
     } else {
       setAddVetsMessages("You cannot add more vets"); 
     }
-  }, [addPetsMessages, addVetsMessages, navigate, pricing.nPets, pricing.nVets, user.pets, user.username, user.vets]);
+  }, [addPetsMessages, addVetsMessages, navigate, pricing.nPets, pricing.nVets, user.id, user.pets, user.username, user.vets]);
 
   return(
     <Box p={5} mx="auto" bg="white" borderRadius="md" boxShadow="md" w={["95%", "85%", "75%"]}>
@@ -77,52 +106,42 @@ export default function Profile() {
           <FeatureToogle feature="advProfile">
             <On>
               <Box>
-                <Card
-                  direction={{ base: "column", sm: "row" }}
-                  overflow="hidden"
-                  variant="outline"
-                  boxShadow="md"
-                  mb={4}
-                >
-                  <Image 
-                    objectFit="cover"
-                    maxW={{ base: '100%', sm: '200px' }}
-                    src="https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/HB4AT3D3IMI6TMPTWIZ74WAR54.jpg"
-                  />
-                  <Stack>
-                    <CardBody>
-                      <Heading size='md'>Coco</Heading>
-                      <Text py='2' fontSize={16} fontWeight="thin">Dog</Text>
-                      <UnorderedList>
-                        <ListItem>Birth date: May 2019</ListItem>
-                        <ListItem>Race: Retriever</ListItem>
-                      </UnorderedList>
-                    </CardBody>
-                  </Stack>
-                </Card>
-                <Card
-                  direction={{ base: "column", sm: "row" }}
-                  overflow="hidden"
-                  variant="outline"
-                  boxShadow="md"
-                  mb={4}
-                >
-                  <Image 
-                    objectFit="cover"
-                    maxW={{ base: '100%', sm: '200px' }}
-                    src="https://www.thesprucepets.com/thmb/r6z0a3Yj2CKbxYtS-Rz5YESGwBQ=/420x294/filters:no_upscale():strip_icc()/GettyImages-1185181003-b2f9c48e81304d10b93f55be4090d788.jpg"
-                  />
-                  <Stack>
-                    <CardBody>
-                      <Heading size='md'>Michis</Heading>
-                      <Text py='2' fontSize={16} fontWeight="thin">Cat</Text>
-                      <UnorderedList>
-                        <ListItem>Birth date: Jul 2017</ListItem>
-                        <ListItem>Race: Common European</ListItem>
-                      </UnorderedList>
-                    </CardBody>
-                  </Stack>
-                </Card>
+                {
+                  pets.map((pet: any) => {
+                    return(
+                      <Card
+                        direction={{ base: "column", sm: "row" }}
+                        overflow="hidden"
+                        variant="outline"
+                        boxShadow="md"
+                        mb={4}
+                        key={pet.id}
+                      >
+                        {pet.photo ? 
+                        <Image 
+                          objectFit="cover"
+                          maxW={{ base: '100%', sm: '200px' }}
+                          src={pet.photo}
+                        /> : 
+                        <Image
+                          objectFit="cover"
+                          maxW={{ base: '100%', sm: '200px' }}
+                          src="/media/pet-placeholder.jpg"
+                        />}
+                        <Stack>
+                          <CardBody>
+                            <Heading size='md'>{pet.name}</Heading>
+                            <Text py='2' fontSize={16} fontWeight="thin">{pet.category.name}</Text>
+                            <UnorderedList>
+                              <ListItem>Birth date: {pet.birth}</ListItem>
+                              <ListItem>Race: {pet.race}</ListItem>
+                            </UnorderedList>
+                          </CardBody>
+                        </Stack>
+                      </Card>
+                    )
+                  })
+                }
               </Box>
             </On>
             <Off>
@@ -137,16 +156,17 @@ export default function Profile() {
                       </Tr>
                     </Thead>
                     <Tbody>
-                      <Tr>
-                        <Td>Coco</Td>
-                        <Td>Dog</Td>
-                        <Td>May 2019</Td>
-                      </Tr>
-                      <Tr>
-                        <Td>Michis</Td>
-                        <Td>Cat</Td>
-                        <Td>Jul 2017</Td>
-                      </Tr>
+                      {
+                        pets.map((pet: any) => {
+                          return (
+                            <Tr key={pet.id}>
+                              <Td>{pet.name}</Td>
+                              <Td>{pet.category.name}</Td>
+                              <Td>{pet.birth}</Td>
+                            </Tr>
+                          );
+                        })
+                      }
                     </Tbody>
                   </Table>
                 </TableContainer>
@@ -171,32 +191,34 @@ export default function Profile() {
           </Box>
           <Text alignSelf="center" mt={2} fontSize={14}>{addVetsMessages}</Text>
         </Box>
-        <TableContainer>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Email</Th>
-                <Th>Address</Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td>John Wood</Td>
-                <Td><Link href="mailto:johnclinic@petfriends.com">johnclinic@petfriends.com</Link></Td>
-                <Td>1512 Marietta Street, Vallejo, CA</Td>
-                <Td textAlign="end"><Button colorScheme="blue" boxShadow="md">Book date</Button></Td>
-              </Tr>
-              <Tr>
-                <Td>Jennifer Wick</Td>
-                <Td><Link href="mailto:j.wick@dogsandcat.com">j.wick@dogsandcat.com</Link></Td>
-                <Td>1756 Fairway Drive, Vacaville, CA</Td>
-                <Td textAlign="end"><Button colorScheme="blue" boxShadow="md">Book date</Button></Td>
-              </Tr>
-            </Tbody>
-          </Table>
-        </TableContainer>
+        { vets.length > 0 &&
+          <TableContainer>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>Name</Th>
+                  <Th>Email</Th>
+                  <Th>Address</Th>
+                  <Th></Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {
+                  vets.map((vet: any) => {
+                    return (
+                      <Tr key={vet.id}>
+                        <Td>{vet.name}</Td>
+                        <Td><Link href={`mailto:${vet.email}`}>{vet.email}</Link></Td>
+                        <Td>{vet.address}</Td>
+                        <Td textAlign="end"><Button size="sm" colorScheme="blue" boxShadow="md">Book date</Button></Td>
+                      </Tr>
+                    );
+                  })
+                }
+              </Tbody>
+            </Table>
+          </TableContainer>
+        }
       </Box>
     </Box>
   );
