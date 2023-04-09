@@ -9,3 +9,13 @@ export const userState = atom({
   key: "userState",
   default: {} as any
 });
+
+export const routesState = atom({
+  key: "routesState",
+  default: [] as any
+});
+
+export const pricingPlanState = atom({
+  key: "pricingPlanStatus",
+  default: {} as any
+});

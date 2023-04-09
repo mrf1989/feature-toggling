@@ -3,6 +3,7 @@ export type PricingPlan = {
   nVets: number,
   nPets: number,
   nDates: number,
+  veterinarySpecialities: string[],
   advProfile: boolean,
   vetHistory: boolean,
   adoptionSys: boolean,

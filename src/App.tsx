@@ -3,30 +3,33 @@ import Main from "./routes/main";
 import Welcome from "./routes/welcome";
 import "./App.css";
 import Login from "./routes/login";
-import { userState, pricingState } from "./state";
+import { userState, routesState } from "./state";
 import { useRecoilValue } from "recoil";
 import Admin from "./routes/admin";
-import PetHostel from "./routes/pet/hostel";
+import Profile from "./routes/me";
 
 function App() {
-  document.title = "Featurized Pet Shop";
+  document.title = "Pet Clinic";
   const user = useRecoilValue(userState);
-  const pricing = useRecoilValue(pricingState);
+  const routes = useRecoilValue(routesState);
 
-  const petHostel = pricing.petHostel && <Route path="/pet/hostel" element={<PetHostel />} />
-  
+  const allowedRoutes = routes.map((route: any) => {
+    return <Route path={route.path} Component={route.component} key={route.path} />
+  });
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Main />}>
             <Route path="/" element={<Welcome />} />
-            {petHostel}
+            {allowedRoutes}
             {
               user.role === "ADMIN" &&
               <Route path="/admin" element={<Admin />} />
             }
             <Route path="/login" element={<Login />} />
+            <Route path="/me" element={<Profile />} />
             <Route path="*" element={<p>There's nothing here!</p>} />
           </Route>
         </Routes>

@@ -1,8 +1,8 @@
-import { Box, Button, FormControl, Input, VStack } from "@chakra-ui/react";
+import { Box, Button, FormControl, Input, VStack, Text } from "@chakra-ui/react";
 import axios from "axios";
 import { Form, Formik } from "formik";
 import { useRecoilState } from "recoil";
-import { pricingState, userState } from "../state";
+import { pricingState, userState, routesState, pricingPlanState } from "../state";
 import { useNavigate } from "react-router-dom";
 import FeatureRetriever from "../lib/FeatureRetriever";
 import { Person } from "../models/PersonType";
@@ -10,7 +10,9 @@ import { Person } from "../models/PersonType";
 export default function Login() {
   const navigate = useNavigate();
   const [pricing, setPricing] = useRecoilState(pricingState);
+  const [routes, setRoutes] = useRecoilState(routesState);
   const [user, setUser] = useRecoilState(userState);
+  const [pricingPlan, setPricingPlan] = useRecoilState(pricingPlanState);
   
   function handleLogin(values: any) {
     axios.post("/api/user/login", {
@@ -20,7 +22,12 @@ export default function Login() {
     .then(async response => {
       const featureRetriever = new FeatureRetriever(response.data as Person);
       const features = await featureRetriever.resolve();
+      const routes = await featureRetriever.routes();
+      const pricing = await featureRetriever.getPricing();
+      localStorage.setItem("user", JSON.stringify(user));
       setPricing(features);
+      setPricingPlan(pricing);
+      setRoutes(routes);
       setUser(response.data as Person);
       navigate("/");
     })
@@ -30,7 +37,17 @@ export default function Login() {
   }
 
   return(
-    <Box mx="auto" w="60%" display="flex" alignItems="center">
+    <Box
+      p={5}
+      mx="auto"
+      w={["80%", "60%", "35%"]}
+      bg="white"
+      borderRadius="md"
+      display="flex"
+      flexDirection="column"
+      boxShadow="md"
+      alignItems="center">
+      <Text fontSize={24} fontWeight="bold" mb={8}>Login access</Text>
       <Formik
         initialValues={{
           username: "",
@@ -60,7 +77,7 @@ export default function Login() {
                   placeholder="Password"
                 />
               </FormControl>
-              <Button colorScheme="blue" type="submit">Login</Button>
+              <Button colorScheme="blue" boxShadow="md" type="submit">Login</Button>
             </VStack>
           </Form>
         )}
