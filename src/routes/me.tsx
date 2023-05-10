@@ -95,7 +95,7 @@ export default function Profile() {
             <Text fontSize={24} fontWeight="bold">Your pets</Text>
             <FeatureToogle feature="add-pet">
               <On>
-                <IconButton aria-label="Add Pet" colorScheme="teal" icon={<AddIcon />} boxShadow="md" />
+                <IconButton as={ReactLink} to="/pet/add" aria-label="Add Pet" colorScheme="teal" icon={<AddIcon />} boxShadow="md" />
               </On>
               <Off>
                 <IconButton isDisabled aria-label="Add Pet" colorScheme="teal" icon={<AddIcon />} boxShadow="md" />

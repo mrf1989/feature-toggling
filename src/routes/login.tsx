@@ -9,10 +9,10 @@ import { Person } from "../models/PersonType";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [pricing, setPricing] = useRecoilState(pricingState);
-  const [routes, setRoutes] = useRecoilState(routesState);
-  const [user, setUser] = useRecoilState(userState);
-  const [pricingPlan, setPricingPlan] = useRecoilState(pricingPlanState);
+  const [, setPricing] = useRecoilState(pricingState);
+  const [, setRoutes] = useRecoilState(routesState);
+  const [, setUser] = useRecoilState(userState);
+  const [, setPricingPlan] = useRecoilState(pricingPlanState);
   
   function handleLogin(values: any) {
     axios.post("/api/user/login", {
@@ -24,11 +24,11 @@ export default function Login() {
       const features = await featureRetriever.resolve();
       const routes = await featureRetriever.routes();
       const pricing = await featureRetriever.getPricing();
-      localStorage.setItem("user", JSON.stringify(user));
       setPricing(features);
       setPricingPlan(pricing);
       setRoutes(routes);
       setUser(response.data as Person);
+      localStorage.setItem("user", JSON.stringify(response.data));
       navigate("/");
     })
     .catch(() => {

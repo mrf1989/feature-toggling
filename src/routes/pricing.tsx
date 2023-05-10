@@ -1,11 +1,19 @@
 import { Box, Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { PricingPlan } from "../models/PricingPlan";
+import { useNavigate } from "react-router-dom";
+import { userState } from "../state";
+import { useRecoilState } from "recoil";
+import { PricingPlan, PricingType } from "../models/PricingPlan";
+import { useLogout } from "../utils/logout";
+import { CheckCircleIcon, CloseIcon } from "@chakra-ui/icons";
 
 export default function Pricing() {
+  const navigate = useNavigate();
+  const logout = useLogout();
   const [basic, setBasic] = useState({} as PricingPlan);
   const [advanced, setAdvanced] = useState({} as PricingPlan);
   const [pro, setPro] = useState({} as PricingPlan);
+  const [user, setUser] = useRecoilState(userState);
 
   useEffect(() => {
     async function fetchPricing() {
@@ -17,9 +25,25 @@ export default function Pricing() {
         setPro(princings[2]);
       }
     }
-
     fetchPricing();
   }, []);
+
+  async function updateUserPricing(type: string) {
+    const response = await fetch(`/api/user/${user.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        pricingType: type
+      })
+    });
+
+    if (response.ok) {
+      logout();
+      navigate("/login");
+    }
+  }
 
   return (
     <>
@@ -39,49 +63,49 @@ export default function Pricing() {
               <Tr>
                 <Td>Advanced profile</Td>
                 <Td>
-                  {basic.advProfile ? "Yes" : "No"}
+                  {basic.advProfile ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
                 <Td>
-                  {advanced.advProfile ? "Yes" : "No"}
+                  {advanced.advProfile ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
                 <Td>
-                  {pro.advProfile ? "Yes" : "No"}
+                  {pro.advProfile ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
               </Tr>
               <Tr>
                 <Td>Vet history</Td>
                 <Td>
-                  {basic.vetHistory ? "Yes" : "No"}
+                  {basic.vetHistory ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
                 <Td>
-                  {advanced.vetHistory ? "Yes" : "No"}
+                  {advanced.vetHistory ? <CheckCircleIcon color="green.500" /> :<CloseIcon color="red.500" />}
                 </Td>
                 <Td>
-                  {pro.vetHistory ? "Yes" : "No"}
+                  {pro.vetHistory ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
               </Tr>
               <Tr>
                 <Td>Adoption system</Td>
                 <Td>
-                  {basic.adoptionSys ? "Yes" : "No"}
+                  {basic.adoptionSys ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
                 <Td>
-                  {advanced.adoptionSys ? "Yes" : "No"}
+                  {advanced.adoptionSys ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
                 <Td>
-                  {pro.adoptionSys ? "Yes" : "No"}
+                  {pro.adoptionSys ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
               </Tr>
               <Tr>
                 <Td>Pet hotel</Td>
                 <Td>
-                  {basic.petHostel ? "Yes" : "No"}
+                  {basic.petHostel ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
                 <Td>
-                  {advanced.petHostel ? "Yes" : "No"}
+                  {advanced.petHostel ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
                 <Td>
-                  {pro.petHostel ? "Yes" : "No"}
+                  {pro.petHostel ? <CheckCircleIcon color="green.500" /> : <CloseIcon color="red.500" />}
                 </Td>
               </Tr>
               <Tr>
@@ -140,9 +164,18 @@ export default function Pricing() {
               </Tr>
               <Tr>
                 <Td></Td>
-                <Td><Button colorScheme="blue" boxShadow="md" >Join it</Button></Td>
-                <Td><Button colorScheme="blue" boxShadow="md" >Join it</Button></Td>
-                <Td><Button colorScheme="blue" boxShadow="md" >Join it</Button></Td>
+                <Td>
+                  { user.pricingType === basic.type ? "Current plan" : 
+                  <Button colorScheme="blue" boxShadow="md" onClick={() => updateUserPricing(PricingType.BASIC)} >Join it</Button> }
+                </Td>
+                <Td>
+                  { user.pricingType === advanced.type ? "Current plan" :
+                  <Button colorScheme="blue" boxShadow="md" onClick={() => updateUserPricing(PricingType.ADVANCED)}>Join it</Button> }
+                </Td>
+                <Td>
+                  { user.pricingType === pro.type ? "Current plan" :
+                  <Button colorScheme="blue" boxShadow="md" onClick={() => updateUserPricing(PricingType.PRO)}>Join it</Button> }
+                </Td>
               </Tr>
             </Tbody>
           </Table>

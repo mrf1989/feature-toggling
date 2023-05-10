@@ -5,22 +5,16 @@ import { On } from "../lib/On";
 import { userState, pricingState, routesState } from "../state";
 import { useRecoilState } from "recoil";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import { useLogout } from "../utils/logout";
 
 export default function Main() {
   const navigate = useNavigate();
+  const logout = useLogout();
   const [pricing, setPricing] = useRecoilState(pricingState);
   const [routes, setRoutes] = useRecoilState(routesState);
   const [user, setUser] = useRecoilState(userState);
   const authUser = localStorage.getItem("user");
   const userStored = authUser && JSON.parse(authUser);
-
-  function logout() {
-    localStorage.removeItem("user");
-    setUser({});
-    setPricing({});
-    setRoutes([]);
-    navigate("/");
-  }
   
   return (
     <>
@@ -61,7 +55,7 @@ export default function Main() {
               userStored &&
               <>
                 <Link as={ReactLink} to="/me">Profile</Link>
-                <Button size="sm" boxShadow="md" onClick={logout}>Logout</Button>
+                <Button size="sm" boxShadow="md" onClick={() => logout()}>Logout</Button>
               </>
             }
             {
@@ -101,7 +95,7 @@ export default function Main() {
               }
               {
                 userStored &&
-                <Link as="a" onClick={logout}><MenuItem>Logout</MenuItem></Link>
+                <Link as="a" onClick={() => logout()}><MenuItem>Logout</MenuItem></Link>
               }
               {
                 !userStored &&
