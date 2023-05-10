@@ -5,12 +5,12 @@ import {
   Stack, UnorderedList, ListItem, Tbody, Link
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { FeatureToogle } from "../../lib/FeatureToggle";
-import { Off } from "../../lib/Off";
-import { On } from "../../lib/On";
-import { userState, pricingState, pricingPlanState } from "../../state";
+import { FeatureToogle } from "../lib/FeatureToggle";
+import { Off } from "../lib/Off";
+import { On } from "../lib/On";
+import { userState, pricingState, pricingPlanState } from "../state";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -136,6 +136,11 @@ export default function Profile() {
                               <ListItem>Birth date: {pet.birth}</ListItem>
                               <ListItem>Race: {pet.race}</ListItem>
                             </UnorderedList>
+                            <FeatureToogle feature="vetHistory">
+                              <On>
+                                <Button mt='2' as={ReactLink} to={`/vet/history/${pet.id}`}>Vet history</Button>
+                              </On>
+                            </FeatureToogle>
                           </CardBody>
                         </Stack>
                       </Card>

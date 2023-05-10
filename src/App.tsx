@@ -7,6 +7,7 @@ import { userState, routesState } from "./state";
 import { useRecoilValue } from "recoil";
 import Admin from "./routes/admin";
 import Profile from "./routes/me";
+import Pricing from "./routes/pricing";
 
 function App() {
   document.title = "Pet Clinic";
@@ -30,6 +31,7 @@ function App() {
             }
             <Route path="/login" element={<Login />} />
             <Route path="/me" element={<Profile />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="*" element={<p>There's nothing here!</p>} />
           </Route>
         </Routes>

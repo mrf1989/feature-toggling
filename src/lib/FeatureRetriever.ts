@@ -1,6 +1,8 @@
 import { Person } from '../models/PersonType';
 import { PricingPlan, PricingType } from '../models/PricingPlan';
+import AdoptionSys from '../routes/pet/adoption';
 import PetHostel from '../routes/pet/hostel';
+import VetHistory from '../routes/vet/history';
 import PricingInterface from './PricingInterface';
 
 export default class FeatureRetriever implements PricingInterface {
@@ -22,25 +24,35 @@ export default class FeatureRetriever implements PricingInterface {
   }
 
   async resolve() {
+    const pricing = await this.pricing;
     return {
-      "add-pet": this.user.pets < (await this.pricing)!.nPets || (await this.pricing)!.nPets < 0,
-      "add-vet": this.user.vets < (await this.pricing)!.nVets || (await this.pricing)!.nVets < 0,
-      "add-date": this.user.dates < (await this.pricing)!.nDates || (await this.pricing)!.nDates < 0,
-      "veterinarySpecialities": (await this.pricing)!.veterinarySpecialities,
-      "advProfile": (await this.pricing)!.advProfile,
-      "vetHistory": (await this.pricing)!.vetHistory,
-      "adoptionSys": (await this.pricing)!.adoptionSys,
-      "petHostel": (await this.pricing)!.petHostel,
-      "cost": (await this.pricing)!.cost
+      "add-pet": this.user.pets < pricing!.nPets || pricing!.nPets < 0,
+      "add-vet": this.user.vets < pricing!.nVets || pricing!.nVets < 0,
+      "add-date": this.user.dates < pricing!.nDates || pricing!.nDates < 0,
+      "veterinarySpecialities": pricing!.veterinarySpecialities,
+      "advProfile": pricing!.advProfile,
+      "vetHistory": pricing!.vetHistory,
+      "adoptionSys": pricing!.adoptionSys,
+      "petHostel": pricing!.petHostel,
+      "cost": pricing!.cost
     };
   }
 
   async routes() {
+    const pricing = await this.pricing;
     return [
-      (await this.pricing).petHostel && {
+      pricing.petHostel && {
         path: "/pet/hostel",
         component: PetHostel
       },
+      pricing.vetHistory && {
+        path: "/vet/history/:id",
+        component: VetHistory
+      },
+      pricing.adoptionSys && {
+        path: "pet/adoption",
+        component: AdoptionSys
+      }
     ];
   }
 }

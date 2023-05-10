@@ -46,9 +46,15 @@ export default function Main() {
               user.role === "ADMIN" &&
               <Link as={ReactLink} to="admin">Admin Panel</Link>
             }
+            <Link as={ReactLink} to="/pricing">Pricing</Link>
             <FeatureToogle feature="petHostel">
               <On>
                 <Link as={ReactLink} to="/pet/hostel">Pet Hostel</Link>
+              </On>
+            </FeatureToogle>
+            <FeatureToogle feature="adoptionSys">
+              <On>
+                <Link as={ReactLink} to="/pet/adoption">Adoption</Link>
               </On>
             </FeatureToogle>
             {
@@ -78,11 +84,17 @@ export default function Main() {
                 userStored &&
                 <Link as={ReactLink} to="/me"><MenuItem>Profile</MenuItem></Link>
               }
+              <Link as={ReactLink} to="/pricing"><MenuItem>Pricing</MenuItem></Link>
               <FeatureToogle feature="petHostel">
                 <On>
                   <Link as={ReactLink} to="/pet/hostel"><MenuItem>Pet Hostel</MenuItem></Link>
                 </On>
               </FeatureToogle>
+              <FeatureToogle feature="adoptionSys">
+              <On>
+                <Link as={ReactLink} to="/pet/adoption"><MenuItem>Adoption</MenuItem></Link>
+              </On>
+            </FeatureToogle>
               {
                 user.role === "ADMIN" &&
                 <Link as={ReactLink} to="admin"><MenuItem>Admin Panel</MenuItem></Link>
@@ -106,9 +118,9 @@ export default function Main() {
         <Box mx="auto" py={10} display={{ base: "block", md: "flex" }} w={["90%", "75%"]} justifyContent="space-between">
             <Box minW="20%">
               <UnorderedList textAlign={{ base: "center", md: "start" }} styleType="none">
-                <ListItem pb={2}><Link as={ReactLink} to="#">About us</Link></ListItem>
-                <ListItem pb={2}><Link as={ReactLink} to="#">Pricing</Link></ListItem>
-                <ListItem pb={2}><Link as={ReactLink} to="#">Contact</Link></ListItem>
+                <ListItem pb={2}><a target="_blank" href="https://github.com/mrf1989/feature-toggling" rel="noreferrer">About us</a></ListItem>
+                <ListItem pb={2}><Link as={ReactLink} to="/pricing">Pricing</Link></ListItem>
+                <ListItem pb={2}><a target="_blank" href="mailto:mruano@us.es" rel="noreferrer">Contact</a></ListItem>
               </UnorderedList>
             </Box>
             <Box minW="20%" mb={6}>
@@ -120,6 +132,11 @@ export default function Main() {
                 <FeatureToogle feature="petHostel">
                   <On>
                     <ListItem pb={2}><Link as={ReactLink} to="/pet/hostel">Pet Hostel</Link></ListItem>
+                  </On>
+                </FeatureToogle>
+                <FeatureToogle feature="adoptionSys">
+                  <On>
+                    <ListItem pb={2}><Link as={ReactLink} to="/pet/adoption">Adoption</Link></ListItem>
                   </On>
                 </FeatureToogle>
                 {
