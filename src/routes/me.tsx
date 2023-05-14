@@ -53,14 +53,6 @@ export default function Profile() {
       }
     }
     handleVets();
-
-    if (pricing.nPets - user.pets > 0) {
-      setAddPetsMessages(`You can register ${pricing.nPets - user.pets} more pets`);
-    } else if (pricing.nPets - user.pets < 0) {
-      setAddPetsMessages("You can register unlimited pets");
-    } else {
-      setAddPetsMessages("You cannot register more pets"); 
-    }
   
     if (pricing.nVets - user.vets > 0) {
       setAddVetsMessages(`You can add ${pricing.nPets - user.pets} more vets`);
@@ -69,7 +61,7 @@ export default function Profile() {
     } else {
       setAddVetsMessages("You cannot add more vets"); 
     }
-  }, [addPetsMessages, addVetsMessages, navigate, pricing.nPets, pricing.nVets, user.id, user.pets, user.username, user.vets]);
+  }, [addVetsMessages, navigate, pricing.nPets, pricing.nVets, user.id, user.pets, user.username, user.vets]);
 
   return(
     <Box p={5} mx="auto" bg="white" borderRadius="md" boxShadow="md" w={["95%", "85%", "75%"]}>
@@ -91,18 +83,23 @@ export default function Profile() {
           <Divider orientation="vertical" />
         </Box>
         <Box display="flex" flexDirection="column" w={{ base: "100%", md: "60%" }}>
-          <Box mb={2} display="flex" justifyContent="space-between">
+          <Box mb={3} display="flex" justifyContent="space-between" alignItems="center">
             <Text fontSize={24} fontWeight="bold">Your pets</Text>
             <FeatureToogle feature="add-pet">
               <On>
-                <IconButton as={ReactLink} to="/pet/add" aria-label="Add Pet" colorScheme="teal" icon={<AddIcon />} boxShadow="md" />
+                <Box display="flex" alignItems="center" gap={3}>
+                  <Text fontSize={14}>You can register more pets</Text>
+                  <IconButton as={ReactLink} to="/pet/add" aria-label="Add Pet" colorScheme="teal" icon={<AddIcon />} boxShadow="md" />
+                </Box>
               </On>
               <Off>
-                <IconButton isDisabled aria-label="Add Pet" colorScheme="teal" icon={<AddIcon />} boxShadow="md" />
+                <Box display="flex" alignItems="center" gap={3}>
+                  <Text fontSize={14} color="red.500">You cannot register more pets</Text>
+                  <IconButton isDisabled aria-label="Add Pet" colorScheme="teal" icon={<AddIcon />} boxShadow="md" />
+                </Box>
               </Off>
             </FeatureToogle>
           </Box>
-          <Text fontSize={14} mb={4}>{addPetsMessages}</Text>
           <FeatureToogle feature="advProfile">
             <On>
               <Box>
