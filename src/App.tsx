@@ -3,16 +3,32 @@ import Main from "./routes/main";
 import Welcome from "./routes/welcome";
 import "./App.css";
 import Login from "./routes/login";
-import { userState, routesState } from "./state";
-import { useRecoilValue } from "recoil";
 import Admin from "./routes/admin";
 import Profile from "./routes/me";
 import Pricing from "./routes/pricing";
+import { useContext, useEffect, useState } from "react";
+import { FeatureContext } from ".";
 
 function App() {
   document.title = "Pet Clinic";
-  const user = useRecoilValue(userState);
-  const routes = useRecoilValue(routesState);
+  const featureContext = useContext(FeatureContext);
+  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
+  const [user, setUser] = useState(featureRetriever.getUser());
+  const [routes, setRoutes] = useState(featureRetriever.routes());
+  
+  useEffect(() => {    
+    function handleFeatureRetrieverChange() {
+      setUser(featureContext.getUser());
+      setRoutes(featureContext.routes());
+      setFeatureRetriever(featureContext);
+    }
+
+    featureContext.subscribe(handleFeatureRetrieverChange);
+
+    return () => {
+      featureContext.unsubscribe(handleFeatureRetrieverChange);
+    };
+  }, [featureContext, featureRetriever, routes, user]);
 
   const allowedRoutes = routes.map((route: any) => {
     return <Route path={route.path} Component={route.component} key={route.path} />

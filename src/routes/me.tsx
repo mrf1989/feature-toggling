@@ -4,30 +4,26 @@ import {
   Table, Thead, Tr, Th, Button, Td, IconButton, Card, CardBody,
   Stack, UnorderedList, ListItem, Tbody, Link
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { FeatureContext } from "..";
 import { FeatureToogle } from "../lib/FeatureToggle";
 import { Off } from "../lib/Off";
 import { On } from "../lib/On";
-import { userState, pricingState, pricingPlanState } from "../state";
 
 export default function Profile() {
+  const featureContext = useContext(FeatureContext);
+
   const navigate = useNavigate();
-  const user = useRecoilValue(userState);
-  const features = useRecoilValue(pricingState);
-  const pricing = useRecoilValue(pricingPlanState);
-  const [addPetsMessages, setAddPetsMessages] = useState("");
-  const [addVetsMessages, setAddVetsMessages] = useState("");
+  const user = featureContext.getUser();
   const [pets, setPets] = useState([]);
   const [vets, setVets] = useState([] as any[]);
 
+  if (!user.username) {
+    navigate("/login");
+  }
   
   useEffect(() => {
-    if (!user.username) {
-      navigate("/login");
-    }
-    
     async function handlePets() {
       const response = await fetch(`/api/pet/owner/${user.id}`);
       if (response.ok) {
@@ -37,31 +33,27 @@ export default function Profile() {
     }
     handlePets();
 
+    let vets: any[] = [];
     async function handleVets() {
-      const response = await fetch(`/api/vet/customer/${user.id}`);
-      if (response.ok) {
-        const vetAdscriptions = await response.json();
-        let vets: any[] = [];
-        vetAdscriptions.forEach(async (adscription: any) => {
-          const response = await fetch(`/api/user/${adscription.vetId}`);
+      fetch(`/api/vet/customer/${user.id}`)
+        .then((response) => {
           if (response.ok) {
-            const vet = await response.json();
-            vets.push(vet);
-            setVets(vets);
+            const vetAdscriptions = response.json();
+            vetAdscriptions.then((adscriptions) => {
+              adscriptions.forEach((adscription: any) => {
+                vets.push(fetch(`/api/user/${adscription.vetId}`));
+              });
+              Promise.all(vets).then((responses) => {
+                Promise.all(responses.map((response) => response.json())).then((vets) => {
+                  setVets(vets);
+                });
+              });
+            });
           }
         });
-      }
     }
     handleVets();
-  
-    if (pricing.nVets - user.vets > 0) {
-      setAddVetsMessages(`You can add ${pricing.nPets - user.pets} more vets`);
-    } else if (pricing.nVets - user.vets < 0) {
-      setAddVetsMessages("You can add unlimited vets");
-    } else {
-      setAddVetsMessages("You cannot add more vets"); 
-    }
-  }, [addVetsMessages, navigate, pricing.nPets, pricing.nVets, user.id, user.pets, user.username, user.vets]);
+  }, [user.id]);
 
   return(
     <Box p={5} mx="auto" bg="white" borderRadius="md" boxShadow="md" w={["95%", "85%", "75%"]}>
@@ -184,14 +176,19 @@ export default function Profile() {
             <Text fontSize={18} fontWeight="bold" alignSelf="center" me={4}>Selected Vets</Text>
             <FeatureToogle feature="add-vet">
               <On>
-                <IconButton size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
+                <Box display="flex" alignItems="center" gap={3}>
+                  <IconButton size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
+                  <Text alignSelf="center" fontSize={14}>You can add more vets</Text>
+                </Box>
               </On>
               <Off>
-                <IconButton isDisabled size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
+                <Box display="flex" alignItems="center" gap={3}>
+                  <IconButton isDisabled size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
+                  <Text alignSelf="center" fontSize={14} color="red.500">You cannot add more vets</Text>
+                </Box>
               </Off>
             </FeatureToogle>
           </Box>
-          <Text alignSelf="center" mt={2} fontSize={14}>{addVetsMessages}</Text>
         </Box>
         { vets.length > 0 &&
           <TableContainer>

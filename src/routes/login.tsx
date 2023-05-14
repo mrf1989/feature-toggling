@@ -1,18 +1,14 @@
 import { Box, Button, FormControl, Input, VStack, Text } from "@chakra-ui/react";
 import axios from "axios";
 import { Form, Formik } from "formik";
-import { useRecoilState } from "recoil";
-import { pricingState, userState, routesState, pricingPlanState } from "../state";
 import { useNavigate } from "react-router-dom";
-import FeatureRetriever from "../lib/FeatureRetriever";
 import { Person } from "../models/PersonType";
+import { useContext } from "react";
+import { FeatureContext } from "..";
 
 export default function Login() {
+  const featureContext = useContext(FeatureContext);
   const navigate = useNavigate();
-  const [, setPricing] = useRecoilState(pricingState);
-  const [, setRoutes] = useRecoilState(routesState);
-  const [, setUser] = useRecoilState(userState);
-  const [, setPricingPlan] = useRecoilState(pricingPlanState);
   
   function handleLogin(values: any) {
     axios.post("/api/user/login", {
@@ -20,16 +16,12 @@ export default function Login() {
       password: values.password
     })
     .then(async response => {
-      const featureRetriever = new FeatureRetriever(response.data as Person);
-      const features = await featureRetriever.resolve();
-      const routes = await featureRetriever.routes();
-      const pricing = await featureRetriever.getPricing();
-      setPricing(features);
-      setPricingPlan(pricing);
-      setRoutes(routes);
-      setUser(response.data as Person);
-      localStorage.setItem("user", JSON.stringify(response.data));
-      navigate("/");
+      const user = response.data as Person;
+      featureContext.updateInstance(user.id, user.pricingType)
+        .then(() => {
+          localStorage.setItem("user", JSON.stringify(user));
+          navigate("/");
+        })
     })
     .catch(() => {
       console.error("Login Error!");
