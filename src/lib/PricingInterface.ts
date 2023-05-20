@@ -1,5 +1,5 @@
 export default interface PricingInterface {
-  resolve(): any;
-  routes(): any;
+  getFeatures(): any;
+  getRoutes(): any;
   getPricing(): any;
 }

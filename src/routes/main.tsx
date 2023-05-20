@@ -1,18 +1,17 @@
-import { Box, Button, Hide, HStack, IconButton, Image, Link, ListItem, Menu, MenuButton, MenuItem, MenuList, Show, Text, UnorderedList } from "@chakra-ui/react";
-import { Outlet, Link as ReactLink, useNavigate } from "react-router-dom";
-import { FeatureToogle } from "../lib/FeatureToggle";
-import { On } from "../lib/On";
-import { userState, pricingState, routesState } from "../state";
-import { useRecoilState } from "recoil";
+import { Box, Button, Hide, HStack, IconButton, Image, Link, ListItem,
+  Menu,MenuButton, MenuItem, MenuList, Show, Text, UnorderedList } from "@chakra-ui/react";
+import { Outlet, Link as ReactLink } from "react-router-dom";
+import { FeatureToogle } from "../lib/components/FeatureToggle";
+import { On } from "../lib/components/On";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { useLogout } from "../utils/logout";
+import { useContext } from "react";
+import { FeatureContext } from "..";
 
 export default function Main() {
-  const navigate = useNavigate();
+  const featureContext = useContext(FeatureContext);
   const logout = useLogout();
-  const [pricing, setPricing] = useRecoilState(pricingState);
-  const [routes, setRoutes] = useRecoilState(routesState);
-  const [user, setUser] = useRecoilState(userState);
+  const user = featureContext.getUser();
   const authUser = localStorage.getItem("user");
   const userStored = authUser && JSON.parse(authUser);
   
@@ -32,7 +31,7 @@ export default function Main() {
       >
         <Box as={ReactLink} alignSelf="center" to="/" display="flex">
           <Image maxW="25%" me={3} src="/media/logo.svg" alt="logo" />
-          <Text alignSelf="center">Pet Shop</Text>
+          <Text alignSelf="center">Pet Clinic</Text>
         </Box>
         <Show above="md">
           <HStack spacing="20px">
