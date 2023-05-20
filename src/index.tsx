@@ -5,9 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react';
 import { RecoilRoot } from 'recoil';
-import FeatureRetrieverSingleton from './lib/FeatureRetrieverSingleton';
+import FeatureRetriever from './lib/FeatureRetriever';
 
-export const FeatureContext = createContext<FeatureRetrieverSingleton>(FeatureRetrieverSingleton.getInstance());
+export const FeatureContext = createContext<FeatureRetriever>(FeatureRetriever.getInstance());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,7 +16,7 @@ root.render(
   <React.StrictMode>
     <RecoilRoot>
       <ChakraProvider>
-        <FeatureContext.Provider value={FeatureRetrieverSingleton.getInstance()}>
+        <FeatureContext.Provider value={FeatureRetriever.getInstance()}>
           <App />
         </FeatureContext.Provider>
       </ChakraProvider>

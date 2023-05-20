@@ -1,8 +1,8 @@
 import { Box, Button, Hide, HStack, IconButton, Image, Link, ListItem,
   Menu,MenuButton, MenuItem, MenuList, Show, Text, UnorderedList } from "@chakra-ui/react";
 import { Outlet, Link as ReactLink } from "react-router-dom";
-import { FeatureToogle } from "../lib/FeatureToggle";
-import { On } from "../lib/On";
+import { FeatureToogle } from "../lib/components/FeatureToggle";
+import { On } from "../lib/components/On";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { useLogout } from "../utils/logout";
 import { useContext } from "react";
@@ -31,7 +31,7 @@ export default function Main() {
       >
         <Box as={ReactLink} alignSelf="center" to="/" display="flex">
           <Image maxW="25%" me={3} src="/media/logo.svg" alt="logo" />
-          <Text alignSelf="center">Pet Shop</Text>
+          <Text alignSelf="center">Pet Clinic</Text>
         </Box>
         <Show above="md">
           <HStack spacing="20px">

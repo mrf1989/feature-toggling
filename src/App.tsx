@@ -14,12 +14,12 @@ function App() {
   const featureContext = useContext(FeatureContext);
   const [featureRetriever, setFeatureRetriever] = useState(featureContext);
   const [user, setUser] = useState(featureRetriever.getUser());
-  const [routes, setRoutes] = useState(featureRetriever.routes());
+  const [routes, setRoutes] = useState(featureRetriever.getRoutes());
   
   useEffect(() => {    
     function handleFeatureRetrieverChange() {
       setUser(featureContext.getUser());
-      setRoutes(featureContext.routes());
+      setRoutes(featureContext.getRoutes());
       setFeatureRetriever(featureContext);
     }
 

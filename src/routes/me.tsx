@@ -7,9 +7,9 @@ import {
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { FeatureContext } from "..";
-import { FeatureToogle } from "../lib/FeatureToggle";
-import { Off } from "../lib/Off";
-import { On } from "../lib/On";
+import { FeatureToogle } from "../lib/components/FeatureToggle";
+import { Off } from "../lib/components/Off";
+import { On } from "../lib/components/On";
 
 export default function Profile() {
   const featureContext = useContext(FeatureContext);
