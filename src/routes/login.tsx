@@ -20,7 +20,7 @@ export default function Login() {
       featureContext.updateInstance(user.id, user.pricingType)
         .then(() => {
           localStorage.setItem("user", JSON.stringify(user));
-          navigate("/");
+          navigate("/me");
         })
     })
     .catch(() => {

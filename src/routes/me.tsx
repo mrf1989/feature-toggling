@@ -10,12 +10,13 @@ import { FeatureContext } from "..";
 import { FeatureToogle } from "../lib/components/FeatureToggle";
 import { Off } from "../lib/components/Off";
 import { On } from "../lib/components/On";
+import { Person } from "../models/PersonType";
 
 export default function Profile() {
   const featureContext = useContext(FeatureContext);
-
+  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
   const navigate = useNavigate();
-  const user = featureContext.getUser();
+  const [user, setUser] = useState(featureRetriever.getUser());
   const [pets, setPets] = useState([]);
   const [vets, setVets] = useState([] as any[]);
 
@@ -53,7 +54,43 @@ export default function Profile() {
         });
     }
     handleVets();
-  }, [user.id]);
+
+    function handleFeatureRetrieverChange() {
+      setUser(featureContext.getUser());
+      setFeatureRetriever(featureContext);
+    }
+
+    featureContext.subscribe(handleFeatureRetrieverChange);
+
+    return () => {
+      featureContext.unsubscribe(handleFeatureRetrieverChange);
+    };
+  }, [featureContext, featureRetriever, user]);
+
+  function handleBookDateWithVet(vet: Person) {
+    const vetAdscription = {
+      vetId: vet.id,
+      customerId: user.id
+    };
+
+    fetch("/api/vet", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(vetAdscription)
+    }).then(response => {
+      if (response.ok) {
+        featureContext.updateUser({ dates: user.dates + 1 });
+      } else {
+        console.log(response);
+      }
+    }
+    ).catch(error => {
+      console.log(error);
+    }
+    );
+  }
 
   return(
     <Box p={5} mx="auto" bg="white" borderRadius="md" boxShadow="md" w={["95%", "85%", "75%"]}>
@@ -177,22 +214,32 @@ export default function Profile() {
       <Divider my={3} orientation="horizontal" />
       <Box>
         <Box ps={5} mb={4}>
-          <Box display="flex">
-            <Text fontSize={18} fontWeight="bold" alignSelf="center" me={4}>Selected Vets</Text>
-            <FeatureToogle feature="add-vet">
-              <On>
-                <Box display="flex" alignItems="center" gap={3}>
-                  <IconButton size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
-                  <Text alignSelf="center" fontSize={14}>You can add more vets</Text>
-                </Box>
-              </On>
-              <Off>
-                <Box display="flex" alignItems="center" gap={3}>
-                  <IconButton isDisabled size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
-                  <Text alignSelf="center" fontSize={14} color="red.500">You cannot add more vets</Text>
-                </Box>
-              </Off>
-            </FeatureToogle>
+          <Box display="flex" justifyContent="space-between">
+            <HStack>
+              <Text fontSize={18} fontWeight="bold" alignSelf="center" me={4}>Selected Vets</Text>
+              <FeatureToogle feature="add-vet">
+                <On>
+                  <Box display="flex" alignItems="center" gap={3}>
+                    <IconButton size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
+                    <Text alignSelf="center" fontSize={14}>You can add more vets</Text>
+                  </Box>
+                </On>
+                <Off>
+                  <Box display="flex" alignItems="center" gap={3}>
+                    <IconButton isDisabled size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
+                    <Text alignSelf="center" fontSize={14} color="red.500">You cannot add more vets</Text>
+                  </Box>
+                </Off>
+              </FeatureToogle>
+            </HStack>
+            <HStack spacing="8px">
+              <FeatureToogle feature="add-date">
+                <Off>
+                  <Text color="red.500" fontSize={14}>Limit of booked dates reached</Text>
+                </Off>
+              </FeatureToogle>
+              <Text>You have {user.dates} vets dates</Text>
+            </HStack>
           </Box>
         </Box>
         { vets.length > 0 &&
@@ -214,7 +261,13 @@ export default function Profile() {
                         <Td>{vet.name}</Td>
                         <Td><Link href={`mailto:${vet.email}`}>{vet.email}</Link></Td>
                         <Td>{vet.address}</Td>
-                        <Td textAlign="end"><Button size="sm" colorScheme="blue" boxShadow="md">Book date</Button></Td>
+                        <Td textAlign="end">
+                          <FeatureToogle feature="add-date">
+                            <On>
+                              <Button size="sm" colorScheme="blue" boxShadow="md" onClick={() => handleBookDateWithVet(vet)}>Book date</Button>
+                            </On>
+                          </FeatureToogle>
+                        </Td>
                       </Tr>
                     );
                   })
