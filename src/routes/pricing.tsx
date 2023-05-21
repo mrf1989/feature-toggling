@@ -14,6 +14,7 @@ export default function Pricing() {
   const [advanced, setAdvanced] = useState({} as PricingPlan);
   const [pro, setPro] = useState({} as PricingPlan);
   const [user, setUser] = useRecoilState(userState);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchPricing() {
@@ -23,6 +24,7 @@ export default function Pricing() {
         setBasic(princings[0]);
         setAdvanced(princings[1]);
         setPro(princings[2]);
+        isLoading && setIsLoading(false);
       }
     }
     fetchPricing();
@@ -47,7 +49,7 @@ export default function Pricing() {
 
   return (
     <>
-      <Box p={5} mx="auto" w={["95%", "85%", "75%"]} bg="white" borderRadius="md" boxShadow="md">
+      {!isLoading && <Box p={5} mx="auto" w={["95%", "85%", "75%"]} bg="white" borderRadius="md" boxShadow="md">
         <Text fontSize={32} mb={5}>Pricing Plans</Text>
         <TableContainer>
           <Table variant="simple">
@@ -147,7 +149,7 @@ export default function Pricing() {
               <Tr>
                 <Td>Veterinary specialities</Td>
                 <Td>
-                  {basic.veterinarySpecialities}
+                  {basic.veterinarySpecialities.join(", ")}
                 </Td>
                 <Td>
                   {advanced.veterinarySpecialities}
@@ -180,7 +182,7 @@ export default function Pricing() {
             </Tbody>
           </Table>
         </TableContainer>
-      </Box>
+      </Box>}
     </>
   );
 }

@@ -74,7 +74,7 @@ export default function Profile() {
     };
 
     fetch("/api/vet", {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
@@ -88,8 +88,7 @@ export default function Profile() {
     }
     ).catch(error => {
       console.log(error);
-    }
-    );
+    });
   }
 
   return(
@@ -220,7 +219,15 @@ export default function Profile() {
               <FeatureToogle feature="add-vet">
                 <On>
                   <Box display="flex" alignItems="center" gap={3}>
-                    <IconButton size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
+                    <IconButton
+                      as={ReactLink}
+                      to={"/vet/add"}
+                      size="sm"
+                      aria-label="Add Vet"
+                      colorScheme="blue"
+                      icon={<AddIcon />}
+                      boxShadow="md"
+                    />
                     <Text alignSelf="center" fontSize={14}>You can add more vets</Text>
                   </Box>
                 </On>

@@ -3,6 +3,7 @@ import { defaultFreePlan, PricingPlan, PricingType } from '../models/PricingPlan
 import AdoptionSys from '../routes/pet/adoption';
 import PetForm from '../routes/pet/form';
 import PetHostel from '../routes/pet/hostel';
+import VetForm from '../routes/vet/form';
 import VetHistory from '../routes/vet/history';
 import PricingInterface from './PricingInterface';
 
@@ -92,7 +93,7 @@ export default class FeatureRetriever implements PricingInterface {
       "add-pet": this.user.pets < pricing.nPets || pricing.nPets < 0,
       "add-vet": this.user.vets < pricing.nVets || pricing.nVets < 0,
       "add-date": this.user.dates < pricing.nDates || pricing.nDates < 0,
-      "veterinarySpecialities": pricing.veterinarySpecialities,
+      "veterinarySpecialities": pricing.veterinarySpecialities.find((s) => s === "all") ? true : false,
       "advProfile": pricing.advProfile,
       "vetHistory": pricing.vetHistory,
       "adoptionSys": pricing.adoptionSys,
@@ -107,6 +108,10 @@ export default class FeatureRetriever implements PricingInterface {
       features['add-pet'] && {
         path: "/pet/add",
         component: PetForm
+      },
+      features['add-vet'] && {
+        path: "/vet/add",
+        component: VetForm
       },
       features.petHostel && {
         path: "/pet/hostel",

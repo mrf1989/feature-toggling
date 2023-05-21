@@ -112,7 +112,7 @@ export default function PetForm() {
               </FormControl>
               <FormControl id="category" mb={5}>
                 <FormLabel>Category</FormLabel>
-                <Select name="category" onChange={handleChange}>
+                <Select placeholder="Select a category" name="category" onChange={handleChange}>
                   <option value="1">Dog</option>
                   <option value="2">Cat</option>
                   <option value="3">Bird</option>
