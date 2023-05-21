@@ -65,6 +65,15 @@ export default class FeatureRetriever implements PricingInterface {
     return this.user;
   }
 
+  updateUser(payload: any) {
+    this.user = {
+      ...this.user,
+      ...payload
+    }
+
+    this.notifyListeners();
+  }
+
   subscribe(listener: Function) {
     this.listeners.push(listener);
   }
