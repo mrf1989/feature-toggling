@@ -2,7 +2,7 @@ import { AddIcon } from "@chakra-ui/icons";
 import {
   Box, Heading, Text, Image, Divider, TableContainer,
   Table, Thead, Tr, Th, Button, Td, IconButton, Card, CardBody,
-  Stack, UnorderedList, ListItem, Tbody, Link
+  Stack, UnorderedList, ListItem, Tbody, Link, HStack
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
@@ -119,7 +119,12 @@ export default function Profile() {
                         />}
                         <Stack>
                           <CardBody>
-                            <Heading size='md'>{pet.name}</Heading>
+                            <HStack spacing="8px">
+                              <Heading size='md'>{pet.name}</Heading>
+                              {
+                                pet.inHostal && <Text fontSize={14} color="red.500" fontWeight="700">IN PET HOSTEL</Text>
+                              }
+                            </HStack>
                             <Text py='2' fontSize={16} fontWeight="thin">{pet.category.name}</Text>
                             <UnorderedList>
                               <ListItem>Birth date: {pet.birth}</ListItem>
