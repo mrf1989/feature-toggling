@@ -1,6 +1,7 @@
 import { PricingType } from "./PricingPlan";
 
 export type Person = {
+  id: number,
   username: string,
   password: string,
   pricingType: PricingType
@@ -13,5 +14,17 @@ export type Person = {
 export enum Role {
   ADMIN = "ADMIN",
   VET = "VET",
-  CUSTOMER = "CUSTOMER"
+  CUSTOMER = "CUSTOMER",
+  NO_ROLE = "NO_ROLE"
+}
+
+export const unauthenticatedUser: Person = {
+  id: -1,
+  username: "guest",
+  password: "guest",
+  role: Role.NO_ROLE,
+  pets: 0,
+  vets: 0,
+  dates: 0,
+  pricingType: PricingType.NO_PRICING,
 }

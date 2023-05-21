@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react';
 import { RecoilRoot } from 'recoil';
+import FeatureRetriever from './lib/FeatureRetriever';
+
+export const FeatureContext = createContext<FeatureRetriever>(FeatureRetriever.getInstance());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,7 +16,9 @@ root.render(
   <React.StrictMode>
     <RecoilRoot>
       <ChakraProvider>
-        <App />
+        <FeatureContext.Provider value={FeatureRetriever.getInstance()}>
+          <App />
+        </FeatureContext.Provider>
       </ChakraProvider>
     </RecoilRoot>
   </React.StrictMode>

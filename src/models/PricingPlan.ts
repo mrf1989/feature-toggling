@@ -14,5 +14,19 @@ export type PricingPlan = {
 export enum PricingType {
   BASIC = "BASIC",
   ADVANCED = "ADVANCED",
-  PRO = "PRO"
+  PRO = "PRO",
+  NO_PRICING = "NO_PRICING"
+}
+
+export const defaultFreePlan: PricingPlan = {
+  type: PricingType.NO_PRICING,
+  nVets: 0,
+  nPets: 0,
+  nDates: 0,
+  veterinarySpecialities: [],
+  advProfile: false,
+  vetHistory: false,
+  adoptionSys: false,
+  petHostel: false,
+  cost: 0
 }

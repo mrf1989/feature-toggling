@@ -2,32 +2,29 @@ import { AddIcon } from "@chakra-ui/icons";
 import {
   Box, Heading, Text, Image, Divider, TableContainer,
   Table, Thead, Tr, Th, Button, Td, IconButton, Card, CardBody,
-  Stack, UnorderedList, ListItem, Tbody, Link
+  Stack, UnorderedList, ListItem, Tbody, Link, HStack
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { FeatureToogle } from "../lib/FeatureToggle";
-import { Off } from "../lib/Off";
-import { On } from "../lib/On";
-import { userState, pricingState, pricingPlanState } from "../state";
+import { FeatureContext } from "..";
+import { FeatureToogle } from "../lib/components/FeatureToggle";
+import { Off } from "../lib/components/Off";
+import { On } from "../lib/components/On";
+import { Person } from "../models/PersonType";
 
 export default function Profile() {
+  const featureContext = useContext(FeatureContext);
+  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
   const navigate = useNavigate();
-  const user = useRecoilValue(userState);
-  const features = useRecoilValue(pricingState);
-  const pricing = useRecoilValue(pricingPlanState);
-  const [addPetsMessages, setAddPetsMessages] = useState("");
-  const [addVetsMessages, setAddVetsMessages] = useState("");
+  const [user, setUser] = useState(featureRetriever.getUser());
   const [pets, setPets] = useState([]);
   const [vets, setVets] = useState([] as any[]);
 
+  if (!user.username) {
+    navigate("/login");
+  }
   
   useEffect(() => {
-    if (!user.username) {
-      navigate("/login");
-    }
-    
     async function handlePets() {
       const response = await fetch(`/api/pet/owner/${user.id}`);
       if (response.ok) {
@@ -37,31 +34,62 @@ export default function Profile() {
     }
     handlePets();
 
+    let vets: any[] = [];
     async function handleVets() {
-      const response = await fetch(`/api/vet/customer/${user.id}`);
-      if (response.ok) {
-        const vetAdscriptions = await response.json();
-        let vets: any[] = [];
-        vetAdscriptions.forEach(async (adscription: any) => {
-          const response = await fetch(`/api/user/${adscription.vetId}`);
+      fetch(`/api/vet/customer/${user.id}`)
+        .then((response) => {
           if (response.ok) {
-            const vet = await response.json();
-            vets.push(vet);
-            setVets(vets);
+            const vetAdscriptions = response.json();
+            vetAdscriptions.then((adscriptions) => {
+              adscriptions.forEach((adscription: any) => {
+                vets.push(fetch(`/api/user/${adscription.vetId}`));
+              });
+              Promise.all(vets).then((responses) => {
+                Promise.all(responses.map((response) => response.json())).then((vets) => {
+                  setVets(vets);
+                });
+              });
+            });
           }
         });
-      }
     }
     handleVets();
-  
-    if (pricing.nVets - user.vets > 0) {
-      setAddVetsMessages(`You can add ${pricing.nPets - user.pets} more vets`);
-    } else if (pricing.nVets - user.vets < 0) {
-      setAddVetsMessages("You can add unlimited vets");
-    } else {
-      setAddVetsMessages("You cannot add more vets"); 
+
+    function handleFeatureRetrieverChange() {
+      setUser(featureContext.getUser());
+      setFeatureRetriever(featureContext);
     }
-  }, [addVetsMessages, navigate, pricing.nPets, pricing.nVets, user.id, user.pets, user.username, user.vets]);
+
+    featureContext.subscribe(handleFeatureRetrieverChange);
+
+    return () => {
+      featureContext.unsubscribe(handleFeatureRetrieverChange);
+    };
+  }, [featureContext, featureRetriever, user]);
+
+  function handleBookDateWithVet(vet: Person) {
+    const vetAdscription = {
+      vetId: vet.id,
+      customerId: user.id
+    };
+
+    fetch("/api/vet", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(vetAdscription)
+    }).then(response => {
+      if (response.ok) {
+        featureContext.updateUser({ dates: user.dates + 1 });
+      } else {
+        console.log(response);
+      }
+    }
+    ).catch(error => {
+      console.log(error);
+    });
+  }
 
   return(
     <Box p={5} mx="auto" bg="white" borderRadius="md" boxShadow="md" w={["95%", "85%", "75%"]}>
@@ -127,7 +155,12 @@ export default function Profile() {
                         />}
                         <Stack>
                           <CardBody>
-                            <Heading size='md'>{pet.name}</Heading>
+                            <HStack spacing="8px">
+                              <Heading size='md'>{pet.name}</Heading>
+                              {
+                                pet.inHostal && <Text fontSize={14} color="red.500" fontWeight="700">IN PET HOSTEL</Text>
+                              }
+                            </HStack>
                             <Text py='2' fontSize={16} fontWeight="thin">{pet.category.name}</Text>
                             <UnorderedList>
                               <ListItem>Birth date: {pet.birth}</ListItem>
@@ -180,18 +213,41 @@ export default function Profile() {
       <Divider my={3} orientation="horizontal" />
       <Box>
         <Box ps={5} mb={4}>
-          <Box display="flex">
-            <Text fontSize={18} fontWeight="bold" alignSelf="center" me={4}>Selected Vets</Text>
-            <FeatureToogle feature="add-vet">
-              <On>
-                <IconButton size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
-              </On>
-              <Off>
-                <IconButton isDisabled size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
-              </Off>
-            </FeatureToogle>
+          <Box display="flex" justifyContent="space-between">
+            <HStack>
+              <Text fontSize={18} fontWeight="bold" alignSelf="center" me={4}>Selected Vets</Text>
+              <FeatureToogle feature="add-vet">
+                <On>
+                  <Box display="flex" alignItems="center" gap={3}>
+                    <IconButton
+                      as={ReactLink}
+                      to={"/vet/add"}
+                      size="sm"
+                      aria-label="Add Vet"
+                      colorScheme="blue"
+                      icon={<AddIcon />}
+                      boxShadow="md"
+                    />
+                    <Text alignSelf="center" fontSize={14}>You can add more vets</Text>
+                  </Box>
+                </On>
+                <Off>
+                  <Box display="flex" alignItems="center" gap={3}>
+                    <IconButton isDisabled size="sm" aria-label="Add Vet" colorScheme="blue" icon={<AddIcon />} boxShadow="md" />
+                    <Text alignSelf="center" fontSize={14} color="red.500">You cannot add more vets</Text>
+                  </Box>
+                </Off>
+              </FeatureToogle>
+            </HStack>
+            <HStack spacing="8px">
+              <FeatureToogle feature="add-date">
+                <Off>
+                  <Text color="red.500" fontSize={14}>Limit of booked dates reached</Text>
+                </Off>
+              </FeatureToogle>
+              <Text>You have {user.dates} vets dates</Text>
+            </HStack>
           </Box>
-          <Text alignSelf="center" mt={2} fontSize={14}>{addVetsMessages}</Text>
         </Box>
         { vets.length > 0 &&
           <TableContainer>
@@ -212,7 +268,13 @@ export default function Profile() {
                         <Td>{vet.name}</Td>
                         <Td><Link href={`mailto:${vet.email}`}>{vet.email}</Link></Td>
                         <Td>{vet.address}</Td>
-                        <Td textAlign="end"><Button size="sm" colorScheme="blue" boxShadow="md">Book date</Button></Td>
+                        <Td textAlign="end">
+                          <FeatureToogle feature="add-date">
+                            <On>
+                              <Button size="sm" colorScheme="blue" boxShadow="md" onClick={() => handleBookDateWithVet(vet)}>Book date</Button>
+                            </On>
+                          </FeatureToogle>
+                        </Td>
                       </Tr>
                     );
                   })

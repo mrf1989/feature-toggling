@@ -1,9 +1,10 @@
-import React, { Fragment, ReactElement } from "react";
-import { pricingState } from "../state";
-import { useRecoilValue } from "recoil";
+import React, { Fragment, ReactElement, useContext } from "react";
+import { FeatureContext } from "../..";
 
 export const FeatureToogle = (args: { children: ReactElement | ReactElement[], feature: string }) => {
-  const pricing = useRecoilValue(pricingState);
+  const featureContext = useContext(FeatureContext);
+  const pricing = featureContext.getFeatures() as any;
+
   if (!args.feature) {
     return null;
   }

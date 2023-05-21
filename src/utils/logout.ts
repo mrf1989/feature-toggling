@@ -1,18 +1,14 @@
-import { useRecoilState } from 'recoil';
 import { useNavigate } from 'react-router-dom';
-import { userState, pricingState, routesState } from "../state";
+import { useContext } from 'react';
+import { FeatureContext } from '..';
 
 export const useLogout = () => {
-  const [user, setUser] = useRecoilState(userState);
-  const [pricing, setPricing] = useRecoilState(pricingState);
-  const [routes, setRoutes] = useRecoilState(routesState);
+  const featureContext = useContext(FeatureContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    setUser({});
-    setPricing({});
-    setRoutes([]);
+    featureContext.destroyInstance();
     navigate("/");
   };
 

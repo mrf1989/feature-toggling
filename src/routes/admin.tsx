@@ -43,7 +43,7 @@ export default function Admin() {
         body = pro;
         break;
     }
-
+    
     const response = await fetch(`/api/pricing/${type}`, {
       method: "PUT",
       headers: {
@@ -161,7 +161,7 @@ export default function Admin() {
                 <Td>Vet history</Td>
                 <Td>
                   {basic.vetHistory && <Switch defaultChecked onChange={() => updateVetHistory("basic")} />}
-                  {!basic.vetHistory && <Switch />}
+                  {!basic.vetHistory && <Switch onChange={() => updateVetHistory("basic")} />}
                 </Td>
                 <Td>
                   {advanced.vetHistory && <Switch defaultChecked onChange={() => updateVetHistory("advanced")} />}
