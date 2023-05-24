@@ -6,11 +6,13 @@ export type Pet = {
   race: string,
   owner: number,
   photo: string,
-  history: {
-    id: number,
-    date: string,
-    comments: string
-  },
+  history: [PetHistory],
   inHostal: boolean,
   inAdoption: boolean
+};
+
+export type PetHistory = {
+  id: number,
+  date: string,
+  comments: string
 };

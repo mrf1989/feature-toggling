@@ -8,6 +8,8 @@ import Profile from "./routes/me";
 import Pricing from "./routes/pricing";
 import { useContext, useEffect, useState } from "react";
 import { FeatureContext } from ".";
+import { Role } from "./models/PersonType";
+import Vet from "./routes/vet";
 
 function App() {
   document.title = "Pet Clinic";
@@ -42,8 +44,12 @@ function App() {
             <Route path="/" element={<Welcome />} />
             {allowedRoutes}
             {
-              user.role === "ADMIN" &&
+              user.role === Role.ADMIN &&
               <Route path="/admin" element={<Admin />} />
+            }
+            {
+              user.role === Role.VET &&
+              <Route path="/vet" element={<Vet />} />
             }
             <Route path="/login" element={<Login />} />
             <Route path="/me" element={<Profile />} />

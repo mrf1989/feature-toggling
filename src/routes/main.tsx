@@ -7,6 +7,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import { useLogout } from "../utils/logout";
 import { useContext } from "react";
 import { FeatureContext } from "..";
+import { Role } from "../models/PersonType";
 
 export default function Main() {
   const featureContext = useContext(FeatureContext);
@@ -36,8 +37,12 @@ export default function Main() {
         <Show above="md">
           <HStack spacing="20px">
             {
-              user.role === "ADMIN" &&
+              user.role === Role.ADMIN &&
               <Link as={ReactLink} to="admin">Admin Panel</Link>
+            }
+            {
+              user.role === Role.VET &&
+              <Link as={ReactLink} to="vet">Add Pet History</Link>
             }
             <Link as={ReactLink} to="/pricing">Pricing</Link>
             <FeatureToogle feature="petHostel">
@@ -89,7 +94,7 @@ export default function Main() {
               </On>
             </FeatureToogle>
               {
-                user.role === "ADMIN" &&
+                user.role === Role.ADMIN &&
                 <Link as={ReactLink} to="admin"><MenuItem>Admin Panel</MenuItem></Link>
               }
               {
@@ -133,7 +138,7 @@ export default function Main() {
                   </On>
                 </FeatureToogle>
                 {
-                  user.role === "ADMIN" &&
+                  user.role === Role.ADMIN &&
                   <ListItem pb={2}><Link as={ReactLink} to="admin">Admin Panel</Link></ListItem>
                 }
               </UnorderedList>
