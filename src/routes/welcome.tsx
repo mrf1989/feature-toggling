@@ -9,7 +9,7 @@ export default function Welcome() {
   
   return (
     <>
-      <Heading mb="10px" textAlign="center">Welcome to Pet Clinic{user.username && `, ${user.username}!`}</Heading>
+      <Heading mb="10px" textAlign="center">Welcome to Pet Clinic{(user.username && user.username !== "guest") && `, ${user.username}`}!</Heading>
       <Text mb="20px" align="center">Simple featurized Pet Clinic app using ReactJS</Text>
       <Box
         mt={10}
