@@ -1,9 +1,12 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
-import { userState } from "../state";
-import { useRecoilValue } from "recoil";
+import { useContext, useState } from "react";
+import { FeatureContext } from "..";
 
 export default function Welcome() {
-  const user = useRecoilValue(userState);
+  const featureContext = useContext(FeatureContext);
+  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
+  const [user, setUser] = useState(featureRetriever.getUser());
+  
   return (
     <>
       <Heading mb="10px" textAlign="center">Welcome to Pet Clinic{user.username && `, ${user.username}!`}</Heading>
