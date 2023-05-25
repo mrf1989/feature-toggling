@@ -1,19 +1,20 @@
 import { Box, Button, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { userState } from "../state";
-import { useRecoilState } from "recoil";
 import { PricingPlan, PricingType } from "../models/PricingPlan";
 import { useLogout } from "../utils/logout";
 import { CheckCircleIcon, CloseIcon } from "@chakra-ui/icons";
+import { FeatureContext } from "..";
 
 export default function Pricing() {
+  const featureContext = useContext(FeatureContext);
+  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
   const navigate = useNavigate();
   const logout = useLogout();
   const [basic, setBasic] = useState({} as PricingPlan);
   const [advanced, setAdvanced] = useState({} as PricingPlan);
   const [pro, setPro] = useState({} as PricingPlan);
-  const [user, setUser] = useRecoilState(userState);
+  const [user, setUser] = useState(featureRetriever.getUser());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
