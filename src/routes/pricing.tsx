@@ -136,7 +136,7 @@ export default function Pricing() {
                 </Td>
               </Tr>
               <Tr>
-                <Td>Max number of dates</Td>
+                <Td>Number of dates/month</Td>
                 <Td>
                   {basic.nDates > 0 ? basic.nDates : "Unlimited"}
                 </Td>

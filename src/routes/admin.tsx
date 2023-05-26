@@ -287,7 +287,7 @@ export default function Admin() {
                 </Td>
               </Tr>
               <Tr>
-                <Td>Max number of dates</Td>
+                <Td>Number of dates month</Td>
                 <Td>
                   <NumberInput
                     min={-1}
