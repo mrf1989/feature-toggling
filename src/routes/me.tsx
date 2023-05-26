@@ -97,6 +97,11 @@ export default function Profile() {
     }).then(response => {
       if (response.ok) {
         setPets(pets.filter((p: any) => p.id !== petId));
+        featureContext.updateInstance(user.id, user.pricingType)
+          .then(() => {
+            localStorage.setItem("user", JSON.stringify(user));
+            navigate("/me");
+          });
       } else {
         console.log(response);
       }
@@ -113,6 +118,11 @@ export default function Profile() {
         setVets(vets.filter((v: any) => v.id !== vetId));
         response.json().then((data) => {
           featureContext.updateUser({ dates: user.dates - data.dates.length });
+          featureContext.updateInstance(user.id, user.pricingType)
+          .then(() => {
+            localStorage.setItem("user", JSON.stringify(user));
+            navigate("/me");
+          });
         });
       } else {
         console.log(response);

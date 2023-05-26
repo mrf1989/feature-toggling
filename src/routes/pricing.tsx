@@ -25,11 +25,15 @@ export default function Pricing() {
         setBasic(princings[0]);
         setAdvanced(princings[1]);
         setPro(princings[2]);
-        isLoading && setIsLoading(false);
+        featureContext.updateInstance(user.id, user.pricingType)
+        .then(() => {
+          localStorage.setItem("user", JSON.stringify(user));
+          isLoading && setIsLoading(false);
+        });
       }
     }
     fetchPricing();
-  }, []);
+  }, [featureContext, isLoading, user]);
 
   async function updateUserPricing(type: string) {
     const response = await fetch(`/api/user/${user.id}`, {
