@@ -4,6 +4,6 @@ export type VetAdscription = {
   customerId: number,
   dates: {
     id: number,
-    date: string,
+    date: Date,
   }[]
 }
