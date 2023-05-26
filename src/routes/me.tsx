@@ -199,10 +199,10 @@ export default function Profile() {
                             </UnorderedList>
                             <FeatureToogle feature="vetHistory">
                               <On>
-                                <Button mt='2' as={ReactLink} to={`/vet/history/${pet.id}`}>Vet history</Button>
+                                <Button size="sm" mt='2' as={ReactLink} to={`/vet/history/${pet.id}`}>Vet history</Button>
                               </On>
                             </FeatureToogle>
-                            <IconButton mt="2" ms="3" onClick={() => deletePet(pet.id)} aria-label="Delete Pet" colorScheme="red" icon={<DeleteIcon />} boxShadow="md" />
+                            <IconButton mt="2" ms="3" size="sm" onClick={() => deletePet(pet.id)} aria-label="Delete Pet" colorScheme="red" icon={<DeleteIcon />} boxShadow="md" />
                           </CardBody>
                         </Stack>
                       </Card>
@@ -239,11 +239,11 @@ export default function Profile() {
                               <FeatureToogle feature="vetHistory">
                                 <On>
                                   <Td>
-                                    <IconButton aria-label="Got to pet history" as={ReactLink} to={`/vet/history/${pet.id}`} icon={<ArrowDownIcon />} />
+                                    <IconButton size="sm" aria-label="Got to pet history" as={ReactLink} to={`/vet/history/${pet.id}`} icon={<ArrowDownIcon />} />
                                   </Td>
                                 </On>
                               </FeatureToogle>
-                              <Td><IconButton onClick={() => deletePet(pet.id)} aria-label="Delete Pet" colorScheme="red" icon={<DeleteIcon />} boxShadow="md" /></Td>
+                              <Td><IconButton size="sm" onClick={() => deletePet(pet.id)} aria-label="Delete Pet" colorScheme="red" icon={<DeleteIcon />} boxShadow="md" /></Td>
                             </Tr>
                           );
                         })
@@ -292,6 +292,10 @@ export default function Profile() {
                 </Off>
               </FeatureToogle>
               <Text>You have {user.dates} vets dates</Text>
+              {
+                user.dates > 0 &&
+                <Button size="sm" aria-label="Go to dates" colorScheme="blue" as={ReactLink} to="dates" boxShadow="md">Go to</Button>
+              }
             </HStack>
           </Box>
         </Box>
@@ -322,7 +326,7 @@ export default function Profile() {
                             </On>
                           </FeatureToogle>
                         </Td>
-                        <Td textAlign="end"><IconButton onClick={() => deleteVet(vet.id)} aria-label="Delete Vet" variant='outline' colorScheme="red" icon={<DeleteIcon />} boxShadow="md" /></Td>
+                        <Td textAlign="end"><IconButton size="sm" onClick={() => deleteVet(vet.id)} aria-label="Delete Vet" variant='outline' colorScheme="red" icon={<DeleteIcon />} boxShadow="md" /></Td>
                       </Tr>
                     );
                   })
