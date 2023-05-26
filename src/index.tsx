@@ -5,9 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react';
 import { RecoilRoot } from 'recoil';
-import FeatureRetriever from './lib/FeatureRetriever';
+import ToggleRouter from './lib/ToggleRouter';
 
-export const FeatureContext = createContext<FeatureRetriever>(FeatureRetriever.getInstance());
+export const AppContext = createContext<ToggleRouter>(ToggleRouter.getInstance());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,9 +16,9 @@ root.render(
   <React.StrictMode>
     <RecoilRoot>
       <ChakraProvider>
-        <FeatureContext.Provider value={FeatureRetriever.getInstance()}>
+        <AppContext.Provider value={ToggleRouter.getInstance()}>
           <App />
-        </FeatureContext.Provider>
+        </AppContext.Provider>
       </ChakraProvider>
     </RecoilRoot>
   </React.StrictMode>

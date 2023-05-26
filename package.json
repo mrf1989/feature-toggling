@@ -1,6 +1,11 @@
 {
-  "name": "feature-toggling-ts",
-  "version": "0.1.0",
+  "name": "feature-toggling",
+  "author": {
+    "name": "Mario Ruano",
+    "email": "mruano@us.es",
+    "url": "https://github.com/mrf1989"
+  },
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^2.0.17",

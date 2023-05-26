@@ -5,10 +5,10 @@ import PetForm from '../routes/pet/form';
 import PetHostel from '../routes/pet/hostel';
 import VetForm from '../routes/vet/form';
 import VetHistory from '../routes/vet/history';
-import PricingInterface from './PricingInterface';
+import ToggleRouterInterface from './ToggleRouterInterface';
 
-export default class FeatureRetriever implements PricingInterface {
-  private static instance: FeatureRetriever | null = null;
+export default class ToggleRouter implements ToggleRouterInterface {
+  private static instance: ToggleRouter | null = null;
   private user: Person;
   private pricing: PricingPlan;
   private listeners: Function[] = [];
@@ -18,15 +18,15 @@ export default class FeatureRetriever implements PricingInterface {
     this.pricing = pricing;
   }
 
-  public static getInstance(): FeatureRetriever {
-    if (!FeatureRetriever.instance) {
-      FeatureRetriever.instance = new FeatureRetriever(unauthenticatedUser, defaultFreePlan);
+  public static getInstance(): ToggleRouter {
+    if (!ToggleRouter.instance) {
+      ToggleRouter.instance = new ToggleRouter(unauthenticatedUser, defaultFreePlan);
     }
-    return FeatureRetriever.instance;
+    return ToggleRouter.instance;
   }
 
   public destroyInstance(): void {
-    const instance = FeatureRetriever.instance;
+    const instance = ToggleRouter.instance;
     if (!instance) {
       return;
     }
@@ -37,7 +37,7 @@ export default class FeatureRetriever implements PricingInterface {
   }
 
   public async updateInstance(userId: number, pricingType: PricingType): Promise<void> {
-    const instance = FeatureRetriever.instance;
+    const instance = ToggleRouter.instance;
     if (!instance) {
       return;
     }

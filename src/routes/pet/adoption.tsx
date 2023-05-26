@@ -1,18 +1,18 @@
 import { Box, Text, Button, HStack, Image } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
-import { FeatureContext } from "../../";
+import { AppContext } from "../../";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import { FeatureToogle } from "../../lib/components/FeatureToggle";
+import { TogglePoint } from "../../lib/components/TogglePoint";
 import { On } from "../../lib/components/On";
 import { Off } from "../../lib/components/Off";
 import { Pet } from "../../models/PetType";
 import { Role } from "../../models/PersonType";
 
 export default function AdoptionSys() {
-  const featureContext = useContext(FeatureContext);
+  const appContext = useContext(AppContext);
   const navigate = useNavigate();
-  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
-  const [user, setUser] = useState(featureRetriever.getUser());
+  const [toggleRouter, setToggleRouter] = useState(appContext);
+  const [user, setUser] = useState(toggleRouter.getUser());
   const [pets, setPets] = useState([]);
 
   useEffect(() => {
@@ -25,17 +25,17 @@ export default function AdoptionSys() {
     }
     handlePets();
 
-    function handleFeatureRetrieverChange() {
-      setUser(featureContext.getUser());
-      setFeatureRetriever(featureContext);
+    function handleToggleRouterChange() {
+      setUser(appContext.getUser());
+      setToggleRouter(appContext);
     }
 
-    featureContext.subscribe(handleFeatureRetrieverChange);
+    appContext.subscribe(handleToggleRouterChange);
 
     return () => {
-      featureContext.unsubscribe(handleFeatureRetrieverChange);
+      appContext.unsubscribe(handleToggleRouterChange);
     };
-  }, [featureContext, featureRetriever, user]);
+  }, [appContext, toggleRouter, user]);
 
   function handleAdoptPet(pet: Pet) {
     const petToAdopt: Pet = {
@@ -53,7 +53,7 @@ export default function AdoptionSys() {
       body: JSON.stringify(petToAdopt)
     }).then(response => {
       if (response.ok) {
-        featureContext.updateUser({ pets: user.pets + 1 });
+        appContext.updateUser({ pets: user.pets + 1 });
         navigate("/me");
       } else {
         console.log(response);
@@ -75,11 +75,11 @@ export default function AdoptionSys() {
       <Box mt={5}>
         <Box>
           <Text fontSize={24}>Pets</Text>
-          <FeatureToogle feature="add-pet">
+          <TogglePoint feature="add-pet">
             <Off>
               <Text fontSize={16} color="red.500">You can't add more pets</Text>
             </Off>
-          </FeatureToogle>
+          </TogglePoint>
         </Box>
         {
           pets.map((pet: any) => (
@@ -104,11 +104,11 @@ export default function AdoptionSys() {
                     <Text fontSize={14}>{pet.birth}</Text>
                   </Box>
                 </HStack>
-                <FeatureToogle feature="add-pet">
+                <TogglePoint feature="add-pet">
                   <On>
                     <Button bg="blue.300" onClick={() => handleAdoptPet(pet)}>Adopt</Button>
                   </On>
-                </FeatureToogle>
+                </TogglePoint>
               </HStack>
             </Box>))
         }

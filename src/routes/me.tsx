@@ -6,17 +6,17 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import { FeatureContext } from "..";
-import { FeatureToogle } from "../lib/components/FeatureToggle";
+import { AppContext } from "..";
+import { TogglePoint } from "../lib/components/TogglePoint";
 import { Off } from "../lib/components/Off";
 import { On } from "../lib/components/On";
 import { Person } from "../models/PersonType";
 
 export default function Profile() {
-  const featureContext = useContext(FeatureContext);
-  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
+  const appContext = useContext(AppContext);
+  const [toggleRouter, setToggleRouter] = useState(appContext);
   const navigate = useNavigate();
-  const [user, setUser] = useState(featureRetriever.getUser());
+  const [user, setUser] = useState(toggleRouter.getUser());
   const [pets, setPets] = useState([]);
   const [vets, setVets] = useState([] as any[]);
 
@@ -55,17 +55,17 @@ export default function Profile() {
     }
     handleVets();
 
-    function handleFeatureRetrieverChange() {
-      setUser(featureContext.getUser());
-      setFeatureRetriever(featureContext);
+    function handleToggleRouterChange() {
+      setUser(appContext.getUser());
+      setToggleRouter(appContext);
     }
 
-    featureContext.subscribe(handleFeatureRetrieverChange);
+    appContext.subscribe(handleToggleRouterChange);
 
     return () => {
-      featureContext.unsubscribe(handleFeatureRetrieverChange);
+      appContext.unsubscribe(handleToggleRouterChange);
     };
-  }, [featureContext, featureRetriever, user]);
+  }, [appContext, toggleRouter, user]);
 
   function handleBookDateWithVet(vet: Person) {
     const vetAdscription = {
@@ -81,7 +81,7 @@ export default function Profile() {
       body: JSON.stringify(vetAdscription)
     }).then(response => {
       if (response.ok) {
-        featureContext.updateUser({ dates: user.dates + 1 });
+        appContext.updateUser({ dates: user.dates + 1 });
       } else {
         console.log(response);
       }
@@ -97,7 +97,7 @@ export default function Profile() {
     }).then(response => {
       if (response.ok) {
         setPets(pets.filter((p: any) => p.id !== petId));
-        featureContext.updateInstance(user.id, user.pricingType)
+        appContext.updateInstance(user.id, user.pricingType)
           .then(() => {
             localStorage.setItem("user", JSON.stringify(user));
             navigate("/me");
@@ -117,8 +117,8 @@ export default function Profile() {
       if (response.ok) {
         setVets(vets.filter((v: any) => v.id !== vetId));
         response.json().then((data) => {
-          featureContext.updateUser({ dates: user.dates - data.dates.length });
-          featureContext.updateInstance(user.id, user.pricingType)
+          appContext.updateUser({ dates: user.dates - data.dates.length });
+          appContext.updateInstance(user.id, user.pricingType)
           .then(() => {
             localStorage.setItem("user", JSON.stringify(user));
             navigate("/me");
@@ -137,13 +137,13 @@ export default function Profile() {
       <Box display={{ base: "block", md: "flex" }}>
         <Box display="flex" w={{ base: "100%", md: "40%" }} justifyContent="center">
           <Box display="flex" flexDirection="column">
-            <FeatureToogle feature="advProfile">
+            <TogglePoint feature="advProfile">
               <On>
                 <Box mb={3} display="flex" justifyContent="center">
                   <Image borderRadius="full" boxSize="120px" src="/media/profile.jpg" boxShadow="md" />
                 </Box>
               </On>
-            </FeatureToogle>
+            </TogglePoint>
             <Heading fontSize={32} textAlign="center">Hi, {user.username}!</Heading>
             <Text fontSize={16} textAlign="center" fontWeight="thin">Welcome to your profile</Text>
           </Box>
@@ -154,7 +154,7 @@ export default function Profile() {
         <Box display="flex" flexDirection="column" w={{ base: "100%", md: "60%" }}>
           <Box mb={3} display="flex" justifyContent="space-between" alignItems="center">
             <Text fontSize={24} fontWeight="bold">Your pets</Text>
-            <FeatureToogle feature="add-pet">
+            <TogglePoint feature="add-pet">
               <On>
                 <Box display="flex" alignItems="center" gap={3}>
                   <Text fontSize={14}>You can register more pets</Text>
@@ -167,9 +167,9 @@ export default function Profile() {
                   <IconButton isDisabled aria-label="Add Pet" colorScheme="teal" icon={<AddIcon />} boxShadow="md" />
                 </Box>
               </Off>
-            </FeatureToogle>
+            </TogglePoint>
           </Box>
-          <FeatureToogle feature="advProfile">
+          <TogglePoint feature="advProfile">
             <On>
               <Box>
                 {
@@ -207,11 +207,11 @@ export default function Profile() {
                               <ListItem>Birth date: {pet.birth}</ListItem>
                               <ListItem>Race: {pet.race}</ListItem>
                             </UnorderedList>
-                            <FeatureToogle feature="vetHistory">
+                            <TogglePoint feature="vetHistory">
                               <On>
                                 <Button size="sm" mt='2' as={ReactLink} to={`/vet/history/${pet.id}`}>Vet history</Button>
                               </On>
-                            </FeatureToogle>
+                            </TogglePoint>
                             <IconButton mt="2" ms="3" size="sm" onClick={() => deletePet(pet.id)} aria-label="Delete Pet" colorScheme="red" icon={<DeleteIcon />} boxShadow="md" />
                           </CardBody>
                         </Stack>
@@ -230,11 +230,11 @@ export default function Profile() {
                         <Th>Name</Th>
                         <Th>Species</Th>
                         <Th>Birth</Th>
-                        <FeatureToogle feature="vetHistory">
+                        <TogglePoint feature="vetHistory">
                           <On>
                             <Th>Vet history</Th>
                           </On>
-                        </FeatureToogle>
+                        </TogglePoint>
                         <Th></Th>
                       </Tr>
                     </Thead>
@@ -246,13 +246,13 @@ export default function Profile() {
                               <Td>{pet.name}</Td>
                               <Td>{pet.category.name}</Td>
                               <Td>{pet.birth}</Td>
-                              <FeatureToogle feature="vetHistory">
+                              <TogglePoint feature="vetHistory">
                                 <On>
                                   <Td>
                                     <IconButton size="sm" aria-label="Got to pet history" as={ReactLink} to={`/vet/history/${pet.id}`} icon={<ArrowDownIcon />} />
                                   </Td>
                                 </On>
-                              </FeatureToogle>
+                              </TogglePoint>
                               <Td><IconButton size="sm" onClick={() => deletePet(pet.id)} aria-label="Delete Pet" colorScheme="red" icon={<DeleteIcon />} boxShadow="md" /></Td>
                             </Tr>
                           );
@@ -263,7 +263,7 @@ export default function Profile() {
                 </TableContainer>
               </Box>
             </Off>
-          </FeatureToogle>
+          </TogglePoint>
         </Box>
       </Box>
       <Divider my={3} orientation="horizontal" />
@@ -272,7 +272,7 @@ export default function Profile() {
           <Box display="flex" justifyContent="space-between">
             <HStack>
               <Text fontSize={18} fontWeight="bold" alignSelf="center" me={4}>Selected Vets</Text>
-              <FeatureToogle feature="add-vet">
+              <TogglePoint feature="add-vet">
                 <On>
                   <Box display="flex" alignItems="center" gap={3}>
                     <IconButton
@@ -293,14 +293,14 @@ export default function Profile() {
                     <Text alignSelf="center" fontSize={14} color="red.500">You cannot add more vets</Text>
                   </Box>
                 </Off>
-              </FeatureToogle>
+              </TogglePoint>
             </HStack>
             <HStack spacing="8px">
-              <FeatureToogle feature="add-date">
+              <TogglePoint feature="add-date">
                 <Off>
                   <Text color="red.500" fontSize={14}>Limit of booked dates reached</Text>
                 </Off>
-              </FeatureToogle>
+              </TogglePoint>
               <Text>You have {user.dates} vets dates</Text>
               {
                 user.dates > 0 &&
@@ -330,11 +330,11 @@ export default function Profile() {
                         <Td><Link href={`mailto:${vet.email}`}>{vet.email}</Link></Td>
                         <Td>{vet.address}</Td>
                         <Td textAlign="end">
-                          <FeatureToogle feature="add-date">
+                          <TogglePoint feature="add-date">
                             <On>
                               <Button size="sm" colorScheme="blue" boxShadow="md" onClick={() => handleBookDateWithVet(vet)}>Book date</Button>
                             </On>
-                          </FeatureToogle>
+                          </TogglePoint>
                         </Td>
                         <Td textAlign="end"><IconButton size="sm" onClick={() => deleteVet(vet.id)} aria-label="Delete Vet" variant='outline' colorScheme="red" icon={<DeleteIcon />} boxShadow="md" /></Td>
                       </Tr>

@@ -1,12 +1,12 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Text, UnorderedList, IconButton } from "@chakra-ui/react";
 import { useContext, useState, useEffect } from "react";
-import { FeatureContext } from "../..";
+import { AppContext } from "../..";
 import { Link as ReactLink } from "react-router-dom";
 
 export default function Dates() {
-  const featureContext = useContext(FeatureContext);
-  const [user, setUser] = useState(featureContext.getUser());
+  const appContext = useContext(AppContext);
+  const [user, setUser] = useState(appContext.getUser());
   const [dates, setDates] = useState([]);
 
   useEffect(() => {

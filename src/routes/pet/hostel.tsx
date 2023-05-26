@@ -4,13 +4,13 @@ import {
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FeatureContext } from "../../";
+import { AppContext } from "../../";
 import { Pet } from "../../models/PetType";
 
 export default function PetHostel() {
-  const featureContext = useContext(FeatureContext);
+  const appContext = useContext(AppContext);
   const navigate = useNavigate();
-  const user = featureContext.getUser();
+  const user = appContext.getUser();
   const [pets, setPets] = useState([]);
   const [pet, setPet] = useState({} as Pet);
 

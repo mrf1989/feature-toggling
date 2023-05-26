@@ -4,10 +4,10 @@ import { Form, Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { Person } from "../models/PersonType";
 import { useContext } from "react";
-import { FeatureContext } from "..";
+import { AppContext } from "..";
 
 export default function Login() {
-  const featureContext = useContext(FeatureContext);
+  const appContext = useContext(AppContext);
   const navigate = useNavigate();
   
   function handleLogin(values: any) {
@@ -17,7 +17,7 @@ export default function Login() {
     })
     .then(async response => {
       const user = response.data as Person;
-      featureContext.updateInstance(user.id, user.pricingType)
+      appContext.updateInstance(user.id, user.pricingType)
         .then(() => {
           localStorage.setItem("user", JSON.stringify(user));
           navigate("/me");

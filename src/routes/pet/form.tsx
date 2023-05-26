@@ -2,28 +2,28 @@ import { Box, Button, FormControl, FormLabel, HStack, Input, Select, Text, VStac
 import { Form, Formik } from "formik";
 import { useContext, useEffect, useState } from "react";
 import { Pet } from "../../models/PetType";
-import { FeatureContext } from "../../";
+import { AppContext } from "../../";
 import { useNavigate } from "react-router-dom";
 import { Role } from "../../models/PersonType";
 
 export default function PetForm() {
-  const featureContext = useContext(FeatureContext);
+  const appContext = useContext(AppContext);
   const navigate = useNavigate();
-  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
-  const [user, setUser] = useState(featureRetriever.getUser());
+  const [toggleRouter, setToggleRouter] = useState(appContext);
+  const [user, setUser] = useState(toggleRouter.getUser());
 
   useEffect(() => {
-    function handleFeatureRetrieverChange() {
-      setUser(featureContext.getUser());
-      setFeatureRetriever(featureContext);
+    function handleToggleRouterChange() {
+      setUser(appContext.getUser());
+      setToggleRouter(appContext);
     }
 
-    featureContext.subscribe(handleFeatureRetrieverChange);
+    appContext.subscribe(handleToggleRouterChange);
 
     return () => {
-      featureContext.unsubscribe(handleFeatureRetrieverChange);
+      appContext.unsubscribe(handleToggleRouterChange);
     };
-  }, [featureContext, featureRetriever, user]);
+  }, [appContext, toggleRouter, user]);
 
   function handleAddPet(values: any) {
     const pet: Pet = {
@@ -40,7 +40,7 @@ export default function PetForm() {
       body: JSON.stringify(pet)
     }).then(response => {
       if (response.ok) {
-        featureContext.updateUser({ pets: user.pets + 1 });
+        appContext.updateUser({ pets: user.pets + 1 });
         navigate("/me");
       } else {
         console.log(response);

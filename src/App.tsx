@@ -7,31 +7,31 @@ import Admin from "./routes/admin";
 import Profile from "./routes/me";
 import Pricing from "./routes/pricing";
 import { useContext, useEffect, useState } from "react";
-import { FeatureContext } from ".";
+import { AppContext } from ".";
 import { Role } from "./models/PersonType";
 import Vet from "./routes/vet";
 import Dates from "./routes/me/dates";
 
 function App() {
   document.title = "Pet Clinic";
-  const featureContext = useContext(FeatureContext);
-  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
-  const [user, setUser] = useState(featureRetriever.getUser());
-  const [routes, setRoutes] = useState(featureRetriever.getRoutes());
+  const appContext = useContext(AppContext);
+  const [toggleRouter, setToggleRouter] = useState(appContext);
+  const [user, setUser] = useState(toggleRouter.getUser());
+  const [routes, setRoutes] = useState(toggleRouter.getRoutes());
   
   useEffect(() => {    
-    function handleFeatureRetrieverChange() {
-      setUser(featureContext.getUser());
-      setRoutes(featureContext.getRoutes());
-      setFeatureRetriever(featureContext);
+    function handleToggleRouterChange() {
+      setUser(appContext.getUser());
+      setRoutes(appContext.getRoutes());
+      setToggleRouter(appContext);
     }
 
-    featureContext.subscribe(handleFeatureRetrieverChange);
+    appContext.subscribe(handleToggleRouterChange);
 
     return () => {
-      featureContext.unsubscribe(handleFeatureRetrieverChange);
+      appContext.unsubscribe(handleToggleRouterChange);
     };
-  }, [featureContext, featureRetriever, routes, user]);
+  }, [appContext, toggleRouter, routes, user]);
 
   const allowedRoutes = routes.map((route: any) => {
     return <Route path={route.path} Component={route.component} key={route.path} />

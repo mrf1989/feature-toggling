@@ -1,19 +1,19 @@
 import { Box, Button, FormControl, FormLabel, Select, Text, VStack } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { useContext, useEffect, useState } from "react";
-import { FeatureContext } from "../../";
+import { AppContext } from "../../";
 import { useNavigate } from "react-router-dom";
-import { FeatureToogle } from "../../lib/components/FeatureToggle";
+import { TogglePoint } from "../../lib/components/TogglePoint";
 import { On } from "../../lib/components/On";
 import { Off } from "../../lib/components/Off";
 import { Role } from "../../models/PersonType";
 
 export default function VetForm() {
-  const featureContext = useContext(FeatureContext);
+  const appContext = useContext(AppContext);
   const navigate = useNavigate();
-  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
-  const pricing = featureRetriever.getPricing();
-  const [user, setUser] = useState(featureRetriever.getUser());
+  const [toggleRouter, setToggleRouter] = useState(appContext);
+  const pricing = toggleRouter.getPricing();
+  const [user, setUser] = useState(toggleRouter.getUser());
   const [vets, setVets] = useState([]);
 
   useEffect(() => {
@@ -25,17 +25,17 @@ export default function VetForm() {
     }
     fetchVets();
 
-    function handleFeatureRetrieverChange() {
-      setUser(featureContext.getUser());
-      setFeatureRetriever(featureContext);
+    function handleToggleRouterChange() {
+      setUser(appContext.getUser());
+      setToggleRouter(appContext);
     }
 
-    featureContext.subscribe(handleFeatureRetrieverChange);
+    appContext.subscribe(handleToggleRouterChange);
 
     return () => {
-      featureContext.unsubscribe(handleFeatureRetrieverChange);
+      appContext.unsubscribe(handleToggleRouterChange);
     };
-  }, [featureContext, featureRetriever, user]);
+  }, [appContext, toggleRouter, user]);
 
   function handleAddVet(values: any) {
     const vetAdscription = {
@@ -51,7 +51,7 @@ export default function VetForm() {
       body: JSON.stringify(vetAdscription),
     }).then((response) => {
       if (response.ok) {
-        featureContext.updateUser({ vets: user.vets + 1 });
+        appContext.updateUser({ vets: user.vets + 1 });
         navigate("/me");
       }
     }).catch((error) => {
@@ -89,7 +89,7 @@ export default function VetForm() {
               <FormControl id="specialty" mb={5}>
                 <FormLabel>Specialty</FormLabel>
                 <Select name="specialty" placeholder="Select a speciality" onChange={handleChange}>
-                  <FeatureToogle feature="veterinarySpecialities">
+                  <TogglePoint feature="veterinarySpecialities">
                     <On>
                       <option value="Dogs">Dogs</option>
                       <option value="Cats">Cats</option>
@@ -107,7 +107,7 @@ export default function VetForm() {
                       ))
                     }
                     </Off>
-                  </FeatureToogle>
+                  </TogglePoint>
                 </Select>
               </FormControl>  
               <Button colorScheme="blue" type="submit">Add vet</Button>

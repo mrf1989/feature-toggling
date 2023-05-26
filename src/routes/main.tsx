@@ -1,18 +1,18 @@
 import { Box, Button, Hide, HStack, IconButton, Image, Link, ListItem,
   Menu,MenuButton, MenuItem, MenuList, Show, Text, UnorderedList } from "@chakra-ui/react";
 import { Outlet, Link as ReactLink } from "react-router-dom";
-import { FeatureToogle } from "../lib/components/FeatureToggle";
+import { TogglePoint } from "../lib/components/TogglePoint";
 import { On } from "../lib/components/On";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { useLogout } from "../utils/logout";
 import { useContext } from "react";
-import { FeatureContext } from "..";
+import { AppContext } from "..";
 import { Role } from "../models/PersonType";
 
 export default function Main() {
-  const featureContext = useContext(FeatureContext);
+  const appContext = useContext(AppContext);
   const logout = useLogout();
-  const user = featureContext.getUser();
+  const user = appContext.getUser();
   const authUser = localStorage.getItem("user");
   const userStored = authUser && JSON.parse(authUser);
   
@@ -45,16 +45,16 @@ export default function Main() {
               <Link as={ReactLink} to="vet">Add Pet History</Link>
             }
             <Link as={ReactLink} to="/pricing">Pricing</Link>
-            <FeatureToogle feature="petHostel">
+            <TogglePoint feature="petHostel">
               <On>
                 <Link as={ReactLink} to="/pet/hostel">Pet Hostel</Link>
               </On>
-            </FeatureToogle>
-            <FeatureToogle feature="adoptionSys">
+            </TogglePoint>
+            <TogglePoint feature="adoptionSys">
               <On>
                 <Link as={ReactLink} to="/pet/adoption">Adoption</Link>
               </On>
-            </FeatureToogle>
+            </TogglePoint>
             {
               userStored &&
               <>
@@ -83,16 +83,16 @@ export default function Main() {
                 <Link as={ReactLink} to="/me"><MenuItem>Profile</MenuItem></Link>
               }
               <Link as={ReactLink} to="/pricing"><MenuItem>Pricing</MenuItem></Link>
-              <FeatureToogle feature="petHostel">
+              <TogglePoint feature="petHostel">
                 <On>
                   <Link as={ReactLink} to="/pet/hostel"><MenuItem>Pet Hostel</MenuItem></Link>
                 </On>
-              </FeatureToogle>
-              <FeatureToogle feature="adoptionSys">
+              </TogglePoint>
+              <TogglePoint feature="adoptionSys">
               <On>
                 <Link as={ReactLink} to="/pet/adoption"><MenuItem>Adoption</MenuItem></Link>
               </On>
-            </FeatureToogle>
+            </TogglePoint>
               {
                 user.role === Role.ADMIN &&
                 <Link as={ReactLink} to="admin"><MenuItem>Admin Panel</MenuItem></Link>
@@ -131,16 +131,16 @@ export default function Main() {
                   userStored &&
                   <ListItem pb={2}><Link as={ReactLink} to="/me">Profile</Link></ListItem>
                 }
-                <FeatureToogle feature="petHostel">
+                <TogglePoint feature="petHostel">
                   <On>
                     <ListItem pb={2}><Link as={ReactLink} to="/pet/hostel">Pet Hostel</Link></ListItem>
                   </On>
-                </FeatureToogle>
-                <FeatureToogle feature="adoptionSys">
+                </TogglePoint>
+                <TogglePoint feature="adoptionSys">
                   <On>
                     <ListItem pb={2}><Link as={ReactLink} to="/pet/adoption">Adoption</Link></ListItem>
                   </On>
-                </FeatureToogle>
+                </TogglePoint>
                 {
                   user.role === Role.ADMIN &&
                   <ListItem pb={2}><Link as={ReactLink} to="admin">Admin Panel</Link></ListItem>

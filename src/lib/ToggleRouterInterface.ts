@@ -1,4 +1,4 @@
-export default interface PricingInterface {
+export default interface ToggleRouterInterface {
   getFeatures(): any;
   getRoutes(): any;
   getPricing(): any;

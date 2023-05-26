@@ -4,17 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { PricingPlan, PricingType } from "../models/PricingPlan";
 import { useLogout } from "../utils/logout";
 import { CheckCircleIcon, CloseIcon } from "@chakra-ui/icons";
-import { FeatureContext } from "..";
+import { AppContext } from "..";
 
 export default function Pricing() {
-  const featureContext = useContext(FeatureContext);
-  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
+  const appContext = useContext(AppContext);
+  const [toggleRouter, setToggleRouter] = useState(appContext);
   const navigate = useNavigate();
   const logout = useLogout();
   const [basic, setBasic] = useState({} as PricingPlan);
   const [advanced, setAdvanced] = useState({} as PricingPlan);
   const [pro, setPro] = useState({} as PricingPlan);
-  const [user, setUser] = useState(featureRetriever.getUser());
+  const [user, setUser] = useState(toggleRouter.getUser());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function Pricing() {
         setBasic(princings[0]);
         setAdvanced(princings[1]);
         setPro(princings[2]);
-        featureContext.updateInstance(user.id, user.pricingType)
+        appContext.updateInstance(user.id, user.pricingType)
         .then(() => {
           localStorage.setItem("user", JSON.stringify(user));
           isLoading && setIsLoading(false);
@@ -33,7 +33,7 @@ export default function Pricing() {
       }
     }
     fetchPricing();
-  }, [featureContext, isLoading, user]);
+  }, [appContext, isLoading, user]);
 
   async function updateUserPricing(type: string) {
     const response = await fetch(`/api/user/${user.id}`, {

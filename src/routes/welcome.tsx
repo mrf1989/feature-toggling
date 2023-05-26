@@ -1,11 +1,11 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
 import { useContext, useState } from "react";
-import { FeatureContext } from "..";
+import { AppContext } from "..";
 
 export default function Welcome() {
-  const featureContext = useContext(FeatureContext);
-  const [featureRetriever, setFeatureRetriever] = useState(featureContext);
-  const [user, setUser] = useState(featureRetriever.getUser());
+  const appContext = useContext(AppContext);
+  const [toggleRouter, setToggleRouter] = useState(appContext);
+  const [user, setUser] = useState(toggleRouter.getUser());
   
   return (
     <>

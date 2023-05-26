@@ -1,9 +1,9 @@
 import React, { Fragment, ReactElement, useContext } from "react";
-import { FeatureContext } from "../..";
+import { AppContext } from "../..";
 
-export const FeatureToogle = (args: { children: ReactElement | ReactElement[], feature: string }) => {
-  const featureContext = useContext(FeatureContext);
-  const pricing = featureContext.getFeatures() as any;
+export const TogglePoint = (args: { children: ReactElement | ReactElement[], feature: string }) => {
+  const appContext = useContext(AppContext);
+  const pricing = appContext.getFeatures() as any;
 
   if (!args.feature) {
     return null;

@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import { FeatureContext } from '..';
+import { AppContext } from '..';
 
 export const useLogout = () => {
-  const featureContext = useContext(FeatureContext);
+  const appContext = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    featureContext.destroyInstance();
+    appContext.destroyInstance();
     navigate("/");
   };
 
