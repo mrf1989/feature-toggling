@@ -1,4 +1,4 @@
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, ArrowDownIcon } from "@chakra-ui/icons";
 import {
   Box, Heading, Text, Image, Divider, TableContainer,
   Table, Thead, Tr, Th, Button, Td, IconButton, Card, CardBody,
@@ -91,6 +91,37 @@ export default function Profile() {
     });
   }
 
+  function deletePet(petId: any) {
+    fetch(`/api/pet/${petId}`, {
+      method: "DELETE"
+    }).then(response => {
+      if (response.ok) {
+        setPets(pets.filter((p: any) => p.id !== petId));
+      } else {
+        console.log(response);
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
+  function deleteVet(vetId: any) {
+    fetch(`/api/vet/customer/${user.id}/vet/${vetId}`, {
+      method: "DELETE"
+    }).then(response => {
+      if (response.ok) {
+        setVets(vets.filter((v: any) => v.id !== vetId));
+        response.json().then((data) => {
+          featureContext.updateUser({ dates: user.dates - data.dates.length });
+        });
+      } else {
+        console.log(response);
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
   return(
     <Box p={5} mx="auto" bg="white" borderRadius="md" boxShadow="md" w={["95%", "85%", "75%"]}>
       <Box display={{ base: "block", md: "flex" }}>
@@ -171,6 +202,7 @@ export default function Profile() {
                                 <Button mt='2' as={ReactLink} to={`/vet/history/${pet.id}`}>Vet history</Button>
                               </On>
                             </FeatureToogle>
+                            <IconButton mt="2" ms="3" onClick={() => deletePet(pet.id)} aria-label="Delete Pet" colorScheme="red" icon={<DeleteIcon />} boxShadow="md" />
                           </CardBody>
                         </Stack>
                       </Card>
@@ -188,6 +220,12 @@ export default function Profile() {
                         <Th>Name</Th>
                         <Th>Species</Th>
                         <Th>Birth</Th>
+                        <FeatureToogle feature="vetHistory">
+                          <On>
+                            <Th>Vet history</Th>
+                          </On>
+                        </FeatureToogle>
+                        <Th></Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -198,6 +236,14 @@ export default function Profile() {
                               <Td>{pet.name}</Td>
                               <Td>{pet.category.name}</Td>
                               <Td>{pet.birth}</Td>
+                              <FeatureToogle feature="vetHistory">
+                                <On>
+                                  <Td>
+                                    <IconButton aria-label="Got to pet history" as={ReactLink} to={`/vet/history/${pet.id}`} icon={<ArrowDownIcon />} />
+                                  </Td>
+                                </On>
+                              </FeatureToogle>
+                              <Td><IconButton onClick={() => deletePet(pet.id)} aria-label="Delete Pet" colorScheme="red" icon={<DeleteIcon />} boxShadow="md" /></Td>
                             </Tr>
                           );
                         })
@@ -257,7 +303,8 @@ export default function Profile() {
                   <Th>Name</Th>
                   <Th>Email</Th>
                   <Th>Address</Th>
-                  <Th></Th>
+                  <Th>Get Date</Th>
+                  <Th>Delete Vet</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -275,6 +322,7 @@ export default function Profile() {
                             </On>
                           </FeatureToogle>
                         </Td>
+                        <Td textAlign="end"><IconButton onClick={() => deleteVet(vet.id)} aria-label="Delete Vet" variant='outline' colorScheme="red" icon={<DeleteIcon />} boxShadow="md" /></Td>
                       </Tr>
                     );
                   })
