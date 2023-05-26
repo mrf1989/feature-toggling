@@ -6,6 +6,7 @@ import { FeatureToogle } from "../../lib/components/FeatureToggle";
 import { On } from "../../lib/components/On";
 import { Off } from "../../lib/components/Off";
 import { Pet } from "../../models/PetType";
+import { Role } from "../../models/PersonType";
 
 export default function AdoptionSys() {
   const featureContext = useContext(FeatureContext);
@@ -66,7 +67,10 @@ export default function AdoptionSys() {
     <Box p={5} mx="auto" w={["95%", "85%", "75%"]} bg="white" borderRadius="md" boxShadow="md">
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Text fontSize={32}>Adoption System</Text>
-        <Button as={ReactLink} to="/pet/add">Add Pet</Button>
+        {
+          (user.role === Role.ADMIN || user.role === Role.VET) &&
+          <Button as={ReactLink} to="/pet/add">Add Pet</Button>
+        }
       </Box>
       <Box mt={5}>
         <Box>

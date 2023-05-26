@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { FeatureContext } from ".";
 import { Role } from "./models/PersonType";
 import Vet from "./routes/vet";
+import Dates from "./routes/me/dates";
 
 function App() {
   document.title = "Pet Clinic";
@@ -53,6 +54,7 @@ function App() {
             }
             <Route path="/login" element={<Login />} />
             <Route path="/me" element={<Profile />} />
+            <Route path="/me/dates" element={<Dates />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="*" element={<p>There's nothing here!</p>} />
           </Route>

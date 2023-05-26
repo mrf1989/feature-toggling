@@ -98,6 +98,10 @@ export default function Main() {
                 <Link as={ReactLink} to="admin"><MenuItem>Admin Panel</MenuItem></Link>
               }
               {
+                user.role === Role.VET &&
+                <Link as={ReactLink} to="vet"><MenuItem>Add Pet History</MenuItem></Link>
+              }
+              {
                 userStored &&
                 <Link as="a" onClick={() => logout()}><MenuItem>Logout</MenuItem></Link>
               }
@@ -140,6 +144,10 @@ export default function Main() {
                 {
                   user.role === Role.ADMIN &&
                   <ListItem pb={2}><Link as={ReactLink} to="admin">Admin Panel</Link></ListItem>
+                }
+                {
+                  user.role === Role.VET &&
+                  <ListItem as={ReactLink} to="vet">Add Pet History</ListItem>
                 }
               </UnorderedList>
             </Box>
