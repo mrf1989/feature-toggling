@@ -157,10 +157,10 @@ export default function Pricing() {
                   {basic.veterinarySpecialities.join(", ")}
                 </Td>
                 <Td>
-                  {advanced.veterinarySpecialities}
+                  {advanced.veterinarySpecialities.join(", ")}
                 </Td>
                 <Td>
-                  {pro.veterinarySpecialities}
+                  {pro.veterinarySpecialities.join(", ")}
                 </Td>
               </Tr>
               <Tr>
