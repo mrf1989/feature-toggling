@@ -2,7 +2,7 @@ import { Box, Button, FormControl, Input, VStack, Text } from "@chakra-ui/react"
 import axios from "axios";
 import { Form, Formik } from "formik";
 import { useNavigate } from "react-router-dom";
-import { Person } from "../models/PersonType";
+import { User } from "../models/UserType";
 import { useContext } from "react";
 import { AppContext } from "..";
 
@@ -16,7 +16,7 @@ export default function Login() {
       password: values.password
     })
     .then(async response => {
-      const user = response.data as Person;
+      const user = response.data as User;
       appContext.updateInstance(user.id, user.pricingType)
         .then(() => {
           localStorage.setItem("user", JSON.stringify(user));

@@ -10,7 +10,7 @@ import { AppContext } from "..";
 import { TogglePoint } from "../lib/components/TogglePoint";
 import { Off } from "../lib/components/Off";
 import { On } from "../lib/components/On";
-import { Person } from "../models/PersonType";
+import { User } from "../models/UserType";
 
 export default function Profile() {
   const appContext = useContext(AppContext);
@@ -67,7 +67,7 @@ export default function Profile() {
     };
   }, [appContext, toggleRouter, user]);
 
-  function handleBookDateWithVet(vet: Person) {
+  function handleBookDateWithVet(vet: User) {
     const vetAdscription = {
       vetId: vet.id,
       customerId: user.id

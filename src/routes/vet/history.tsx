@@ -31,6 +31,7 @@ export default function VetHistory() {
                 <Text>{history.comments}</Text>
               </Box>
             ))}
+            {pet.history.length <= 0 && (<Text>Your pet does not yet have any record in its history</Text>)}
           </Box>
         </Box>)}
       </Box>

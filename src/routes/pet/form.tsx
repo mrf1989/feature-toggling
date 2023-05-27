@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { Pet } from "../../models/PetType";
 import { AppContext } from "../../";
 import { useNavigate } from "react-router-dom";
-import { Role } from "../../models/PersonType";
+import { Role } from "../../models/UserType";
 
 export default function PetForm() {
   const appContext = useContext(AppContext);

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { TogglePoint } from "../../lib/components/TogglePoint";
 import { On } from "../../lib/components/On";
 import { Off } from "../../lib/components/Off";
-import { Role } from "../../models/PersonType";
+import { Role } from "../../models/UserType";
 
 export default function VetForm() {
   const appContext = useContext(AppContext);

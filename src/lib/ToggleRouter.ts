@@ -1,4 +1,4 @@
-import { Person, unauthenticatedUser } from '../models/PersonType';
+import { User, unauthenticatedUser } from '../models/UserType';
 import { defaultFreePlan, PricingPlan, PricingType } from '../models/PricingPlan';
 import AdoptionSys from '../routes/pet/adoption';
 import PetForm from '../routes/pet/form';
@@ -9,11 +9,11 @@ import ToggleRouterInterface from './ToggleRouterInterface';
 
 export default class ToggleRouter implements ToggleRouterInterface {
   private static instance: ToggleRouter | null = null;
-  private user: Person;
+  private user: User;
   private pricing: PricingPlan;
   private listeners: Function[] = [];
 
-  constructor(user: Person, pricing: PricingPlan) {
+  constructor(user: User, pricing: PricingPlan) {
     this.user = user;
     this.pricing = pricing;
   }
@@ -49,7 +49,7 @@ export default class ToggleRouter implements ToggleRouterInterface {
       return;
     }
 
-    const user = await userResponse.json() as Person;
+    const user = await userResponse.json() as User;
     const pricing = await pricingResponse.json() as PricingPlan;
 
     instance.user = user;
@@ -57,16 +57,8 @@ export default class ToggleRouter implements ToggleRouterInterface {
 
     this.notifyListeners();
   }
-
-  getPricing(): PricingPlan {
-    return this.pricing;
-  }
-
-  getUser(): Person {
-    return this.user;
-  }
-
-  updateUser(payload: any) {
+  
+  public updateUser(payload: any) {
     this.user = {
       ...this.user,
       ...payload
@@ -75,19 +67,27 @@ export default class ToggleRouter implements ToggleRouterInterface {
     this.notifyListeners();
   }
 
-  subscribe(listener: Function) {
+  public subscribe(listener: Function) {
     this.listeners.push(listener);
   }
 
-  unsubscribe(listener: Function) {
+  public unsubscribe(listener: Function) {
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
-
+  
   private notifyListeners() {
     this.listeners.forEach((listener) => listener());
   }
 
-  getFeatures() {
+  public getPricing(): PricingPlan {
+    return this.pricing;
+  }
+
+  public getUser(): User {
+    return this.user;
+  }
+
+  public getFeatures() {
     const pricing = this.getPricing();
     return {
       "add-pet": this.user.pets < pricing.nPets || pricing.nPets < 0,
@@ -102,7 +102,7 @@ export default class ToggleRouter implements ToggleRouterInterface {
     };
   }
 
-  getRoutes() {
+  public getRoutes() {
     const features = this.getFeatures();
     return [
       features['add-pet'] && {

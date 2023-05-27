@@ -6,7 +6,7 @@ import { TogglePoint } from "../../lib/components/TogglePoint";
 import { On } from "../../lib/components/On";
 import { Off } from "../../lib/components/Off";
 import { Pet } from "../../models/PetType";
-import { Role } from "../../models/PersonType";
+import { Role } from "../../models/UserType";
 
 export default function AdoptionSys() {
   const appContext = useContext(AppContext);

@@ -8,7 +8,7 @@ import Profile from "./routes/me";
 import Pricing from "./routes/pricing";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from ".";
-import { Role } from "./models/PersonType";
+import { Role } from "./models/UserType";
 import Vet from "./routes/vet";
 import Dates from "./routes/me/dates";
 

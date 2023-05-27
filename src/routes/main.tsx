@@ -7,7 +7,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import { useLogout } from "../utils/logout";
 import { useContext } from "react";
 import { AppContext } from "..";
-import { Role } from "../models/PersonType";
+import { Role } from "../models/UserType";
 
 export default function Main() {
   const appContext = useContext(AppContext);
