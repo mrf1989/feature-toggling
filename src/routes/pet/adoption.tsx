@@ -77,7 +77,7 @@ export default function AdoptionSys() {
           <Text fontSize={24}>Pets</Text>
           <TogglePoint feature="add-pet">
             <Off>
-              <Text fontSize={16} color="red.500">You can't add more pets</Text>
+              <Text fontSize={16} color="red.500">You can't adopt more pets</Text>
             </Off>
           </TogglePoint>
         </Box>

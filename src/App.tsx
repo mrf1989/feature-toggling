@@ -11,6 +11,7 @@ import { AppContext } from ".";
 import { Role } from "./models/UserType";
 import Vet from "./routes/vet";
 import Dates from "./routes/me/dates";
+import PetForm from "./routes/pet/form";
 
 function App() {
   document.title = "Pet Clinic";
@@ -51,6 +52,10 @@ function App() {
             {
               user.role === Role.VET &&
               <Route path="/vet" element={<Vet />} />
+            }
+            {
+              (user.role === Role.ADMIN || user.role === Role.VET) &&
+              <Route path="/pet/add" element={<PetForm />} />
             }
             <Route path="/login" element={<Login />} />
             <Route path="/me" element={<Profile />} />
