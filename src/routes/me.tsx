@@ -140,7 +140,7 @@ export default function Profile() {
             <TogglePoint feature="advProfile">
               <On>
                 <Box mb={3} display="flex" justifyContent="center">
-                  <Image borderRadius="full" boxSize="120px" src="/media/profile.jpg" boxShadow="md" />
+                  <Image borderRadius="full" boxSize="120px" src={user.photo} boxShadow="md" />
                 </Box>
               </On>
             </TogglePoint>

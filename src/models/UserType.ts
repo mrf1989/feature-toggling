@@ -8,6 +8,7 @@ export type User = {
   pets: number,
   vets: number,
   dates: number,
+  photo: string,
   role: Role
 };
 
@@ -26,5 +27,6 @@ export const unauthenticatedUser: User = {
   pets: 0,
   vets: 0,
   dates: 0,
+  photo: "",
   pricingType: PricingType.NO_PRICING,
 }
